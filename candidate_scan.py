@@ -3,9 +3,9 @@ from pkg.repo import ibdstat as ibd
 from pkg.repo import stockstat as ss
 
 avgBalLevels = {
-    'avgDlyPriceVs20': 1.0297954545393384,
-    'avgDlyPriceVs50': 1.0504776816414636,
-    'avgDlyPriceVs200': 1.1838210684764348
+    'avgDlyPriceVs20': 1.032634834219484,
+    'avgDlyPriceVs50': 1.0559530184524843,
+    'avgDlyPriceVs200': 1.188171317154193
 }
 
 
