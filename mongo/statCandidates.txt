@@ -1,32 +1,77 @@
 [
   {
-    $match: {
-      curr_four_wk_chg: {
-        $gte: 0.0,
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        UPDNVOL50: {
+          $gt: 1.0,
+        },
       },
-    },
   },
   {
-    $group: {
-      _id: null,
-      avgStdDev2Week: {
-        $avg: "$STDDEV2WK",
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: "$tickerSymbol",
+        count: {
+          $sum: 1,
+        },
+        updn: {
+          $avg: "$UPDNVOL50",
+        },
+        updnmin: {
+          $min: "$UPDNVOL50",
+        },
+        updnmax: {
+          $max: "$UPDNVOL50",
+        },
+        dyvolv20a: {
+          $avg: "$DYVOLV20A",
+        },
+        dyvolv50a: {
+          $avg: "$DYVOLV50A",
+        },
+        dyvolv200a: {
+          $avg: "$DYVOLV200A",
+        },
+        begin: {
+          $min: "$priceDate",
+        },
+        end: {
+          $max: "$priceDate",
+        },
+        weeklyopt: {
+          $first: "$weeklyOptions",
+        },
       },
-      avgStdDev10Week: {
-        $avg: "$STDDEV10WK",
+  },
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        count: {
+          $gt: 1,
+        },
+        end: {
+          $gt: ISODate("2023-12-01"),
+        },
+        //  weeklyopt: true,
       },
-      avgUpDownVol: {
-        $avg: "$UPDNVOL50",
+  },
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        count: -1,
       },
-      avgDlyPriceVs20: {
-        $avg: "$DYPRCV20A",
-      },
-      avgDlyPriceVs50: {
-        $avg: "$DYPRCV50A",
-      },
-      avgDlyPriceVs200: {
-        $avg: "$DYPRCV200A",
-      },
-    },
   },
 ]
