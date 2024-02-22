@@ -15,7 +15,6 @@ def open_db():
 
 coll_stat_type = "statisticType"
 coll_stat = "stockStatistic"
-coll_aggr_stat = 'aggrStatistics'
 coll_stat_candidate = 'statCandidate'
 
 
@@ -58,12 +57,6 @@ class StatisticsDB:
         result = [stat for stat in stat_cur]
         stat_cur.close()
         return result
-
-    def save_aggr_stats(self, aggr_stat_list):
-        return self._db[coll_aggr_stat].insert_many(aggr_stat_list)
-
-    def drop_aggr_stats(self):
-        return self._db[coll_aggr_stat].drop()
 
     def save_candidate_stat(self, candidate_stat_list):
         return self._db[coll_stat_candidate].insert_many(candidate_stat_list)

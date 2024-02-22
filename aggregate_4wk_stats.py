@@ -1,14 +1,15 @@
-import time
+import datetime
 from pkg.repo import stockdata as sd
 from pkg.repo import ibdstat as ibd
-from pkg.repo import stockstat as ss
+from pkg.repo import aggrstat as aggr
 
 stat_names = ['STDDEV2WK', 'STDDEV10WK', 'UPDNVOL50', 'DYPRCV50A', 'DYPRCV200A', 'ZSCORE', 'TRMOM', 'DYPRCV20A', 'DYVOLV20A', 'DYVOLV50A', 'DYVOLV200A']
 yahoo_stat_names = ['forwardPE', 'profitMargins', 'forwardPE', 'shortRatio', 'shortPercentOfFloat', 'priceToBook', 'enterpriseToEbitda', 'quickRatio', 'currentRatio', 'debtToEquity', 'earningsGrowth', 'revenueGrowth', 'grossMargins', 'ebitdaMargins', 'operatingMargins']
 ibd_stat_names = ['compositeRating', 'epsRating', 'relativeStrength', 'groupStrength', 'accumDist', 'salesMarginRoe', 'mgmtOwnPct', 'mgmtOwnPct']
 ibd_db = ibd.IbdStatisticDB()
 sdb = sd.StocksDB()
-ss_db = ss.StatisticsDB()
+aggr_db = aggr.AggregateStatDB()
+
 price_date_offset = (4*5)-1
 pct_increase1 = 12
 pct_increase2 = 20
@@ -92,10 +93,10 @@ for stat in candidate_stats:
 
     if len(ibd_stats) > 0:
         for sr in ibd_stat_names:
-            try:
+            if sr in ibd_stats[0]:
                 aggr_dict[sr] = ibd_stats[0][sr]
-            except KeyError:
-                print('KeyError on IBD stat: ', sr, ibd_stats[0])
+            else:
+                print('IBD stat not found: ', sr, ibd_stats[0])
         aggr_dict['listCnt'] = len(ibd_stats[0]['listName'])
     else:
         print('IBD stat was not found for ', price_id)
@@ -106,18 +107,19 @@ for stat in candidate_stats:
 
     if len(stat_list) > 0:
         for stat_name in stat_names:
-            try:
+            if stat_name in stat_dict:
                 aggr_dict[stat_name] = stat_dict[stat_name]['statisticValue']
-            except KeyError:
-                print('KeyError on ', stat_name)
+            else:
+                print('Statistic was not found ', stat_name)
     if len(ibd_stats) > 0:
+        aggr_dict['createDate'] = datetime.datetime.now(datetime.UTC)
         aggr_records.append(aggr_dict)
     stat_handled_cnt += 1
     print(stat_handled_cnt, '/', stat_cnt)
 
 print('Found ', len(aggr_records), ' aggregate records')
 print('Drop existing aggregate statistics')
-ss_db.drop_aggr_stats()
+aggr_db.drop_aggr_stats()
 print('Save aggregate statistics')
-x = ss_db.save_aggr_stats(aggr_records)
+x = aggr_db.save_aggr_stats(aggr_records)
 print('Aggregate records added: ', len(x.inserted_ids))

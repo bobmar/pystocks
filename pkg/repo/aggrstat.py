@@ -56,3 +56,9 @@ class AggregateStatDB:
         aggr_col = self._db[coll_aggr_stat]
         aggr_result = aggr_col.aggregate(aggr_pipeline)
         return [aggr_item for aggr_item in aggr_result]
+
+    def save_aggr_stats(self, aggr_stat_list):
+        return self._db[coll_aggr_stat].insert_many(aggr_stat_list)
+
+    def drop_aggr_stats(self):
+        return self._db[coll_aggr_stat].drop()
