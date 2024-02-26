@@ -13,6 +13,8 @@ def open_db():
 
 
 coll_aggr_stat = 'aggrStatistics'
+coll_aggr_param = 'aggrStatParam'
+
 aggr_pipeline = [
   {
     "$match": {
@@ -62,3 +64,7 @@ class AggregateStatDB:
 
     def drop_aggr_stats(self):
         return self._db[coll_aggr_stat].drop()
+
+    def save_aggr_param(self, param):
+        aggr_result = self._db[coll_aggr_param].insert_one(param)
+        return aggr_result
