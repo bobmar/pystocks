@@ -2,9 +2,12 @@ import datetime
 from pkg.repo import stockdata as sd
 from pkg.repo import ibdstat as ibd
 from pkg.repo import aggrstat as aggr
-
-stat_names = ['STDDEV2WK', 'STDDEV10WK', 'UPDNVOL50', 'DYPRCV50A', 'DYPRCV200A', 'ZSCORE', 'TRMOM', 'DYPRCV20A', 'DYVOLV20A', 'DYVOLV50A', 'DYVOLV200A']
-yahoo_stat_names = ['forwardPE', 'profitMargins', 'forwardPE', 'shortRatio', 'shortPercentOfFloat', 'priceToBook', 'enterpriseToEbitda', 'quickRatio', 'currentRatio', 'debtToEquity', 'earningsGrowth', 'revenueGrowth', 'grossMargins', 'ebitdaMargins', 'operatingMargins']
+"""
+Look for stock trades which have increased by a certain percentage in the last 4 weeks.
+Collect statistics from 4 weeks ago for further analysis.
+"""
+stat_names = ['STDDEV2WK', 'STDDEV10WK', 'UPDNVOL50', 'DYPRCV50A', 'DYPRCV10A', 'DYPRCV200A', 'ZSCORE', 'TRMOM', 'DYPRCV20A', 'DYVOLV20A', 'DYVOLV50A', 'DYVOLV200A']
+# yahoo_stat_names = ['forwardPE', 'profitMargins', 'forwardPE', 'shortRatio', 'shortPercentOfFloat', 'priceToBook', 'enterpriseToEbitda', 'quickRatio', 'currentRatio', 'debtToEquity', 'earningsGrowth', 'revenueGrowth', 'grossMargins', 'ebitdaMargins', 'operatingMargins']
 ibd_stat_names = ['compositeRating', 'epsRating', 'relativeStrength', 'groupStrength', 'accumDist', 'salesMarginRoe', 'mgmtOwnPct', 'mgmtOwnPct']
 ibd_db = ibd.IbdStatisticDB()
 sdb = sd.StocksDB()
@@ -75,15 +78,12 @@ for stat in candidate_stats:
     aggr_dict = {}
     print('Find current prices for ', stat['tickerSymbol'])
     price_list = sdb.find_price_by_ticker(stat['tickerSymbol'])
-    print('Found ', len(price_list), ' prices')
     print('Find historical prices for ', stat['priceId'])
     price_id, price_date = find_hist_price(price_list, stat['priceId'], price_date_offset+1)
     print('Find statistics for ', price_id)
     stat_list = sdb.find_stat_by_price_id(price_id)
-    print('Found ', len(stat_list), ' statistics')
     print('Find IBD statistics for ', price_id)
     ibd_stats = ibd_db.find_stat_by_price_id(price_id)
-    print('Found', len(ibd_stats), ' IBD statistics')
     aggr_dict['_id'] = stat['priceId']
     aggr_dict['curr_four_wk_chg'] = stat['statisticValue']
     if price_date is not None:

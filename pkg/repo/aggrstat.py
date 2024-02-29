@@ -1,4 +1,3 @@
-import pymongo
 from pymongo import MongoClient
 import json
 
@@ -35,6 +34,9 @@ aggr_pipeline = [
       "avgUpDownVol": {
         "$avg": "$UPDNVOL50",
       },
+      "avgDlyPriceVs10": {
+        "$avg": "$DYPRCV10A",
+      },
       "avgDlyPriceVs20": {
         "$avg": "$DYPRCV20A",
       },
@@ -67,4 +69,8 @@ class AggregateStatDB:
 
     def save_aggr_param(self, param):
         aggr_result = self._db[coll_aggr_param].insert_one(param)
+        return aggr_result
+
+    def find_aggr_newest(self):
+        aggr_result = self._db[coll_aggr_param].find_one(sort=[('_id',-1)])
         return aggr_result
