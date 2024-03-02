@@ -1,4 +1,5 @@
 import datetime
+import time
 from pkg.repo import stockdata as sd
 from pkg.repo import ibdstat as ibd
 from pkg.repo import aggrstat as aggr
@@ -7,7 +8,6 @@ Look for stock trades which have increased by a certain percentage in the last 4
 Collect statistics from 4 weeks ago for further analysis.
 """
 stat_names = ['STDDEV2WK', 'STDDEV10WK', 'UPDNVOL50', 'DYPRCV50A', 'DYPRCV10A', 'DYPRCV200A', 'ZSCORE', 'TRMOM', 'DYPRCV20A', 'DYVOLV20A', 'DYVOLV50A', 'DYVOLV200A']
-# yahoo_stat_names = ['forwardPE', 'profitMargins', 'forwardPE', 'shortRatio', 'shortPercentOfFloat', 'priceToBook', 'enterpriseToEbitda', 'quickRatio', 'currentRatio', 'debtToEquity', 'earningsGrowth', 'revenueGrowth', 'grossMargins', 'ebitdaMargins', 'operatingMargins']
 ibd_stat_names = ['compositeRating', 'epsRating', 'relativeStrength', 'groupStrength', 'accumDist', 'salesMarginRoe', 'mgmtOwnPct', 'mgmtOwnPct']
 ibd_db = ibd.IbdStatisticDB()
 sdb = sd.StocksDB()
@@ -95,11 +95,7 @@ for stat in candidate_stats:
         for sr in ibd_stat_names:
             if sr in ibd_stats[0]:
                 aggr_dict[sr] = ibd_stats[0][sr]
-            else:
-                print('IBD stat not found: ', sr, ibd_stats[0])
         aggr_dict['listCnt'] = len(ibd_stats[0]['listName'])
-    else:
-        print('IBD stat was not found for ', price_id)
     print('Aggregate record', aggr_dict)
     stat_dict = {}
     for stat_item in stat_list:
@@ -109,8 +105,6 @@ for stat in candidate_stats:
         for stat_name in stat_names:
             if stat_name in stat_dict:
                 aggr_dict[stat_name] = stat_dict[stat_name]['statisticValue']
-            else:
-                print('Statistic was not found ', stat_name)
     if len(ibd_stats) > 0:
         aggr_dict['createDate'] = datetime.datetime.now(datetime.UTC)
         aggr_records.append(aggr_dict)
