@@ -1,5 +1,4 @@
 import datetime
-import time
 from pkg.repo import stockdata as sd
 from pkg.repo import ibdstat as ibd
 from pkg.repo import aggrstat as aggr
@@ -13,16 +12,12 @@ ibd_db = ibd.IbdStatisticDB()
 sdb = sd.StocksDB()
 aggr_db = aggr.AggregateStatDB()
 
-price_date_offset = (4*5)-1
+num_weeks = 4
+periods_per_week = 5
+
+price_date_offset = (num_weeks*periods_per_week)-1
 pct_increase1 = 12
 pct_increase2 = 20
-
-hdr = ['curr_price_date', 'curr_four_wk_chg', 'four_wk_price_date']
-for stat_fld in ibd_stat_names:
-    hdr.append(stat_fld)
-hdr.append('ibdListCount')
-for stat_name in stat_names:
-    hdr.append(stat_name)
 
 
 def find_stats(ticker_symbol, stat_price_id):
