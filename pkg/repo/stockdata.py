@@ -8,7 +8,7 @@ def open_db():
     stock_conn_file = open("stock-db.json", "r")
     stock_conn_dict = json.load(stock_conn_file)
     try:
-        client = MongoClient(stock_conn_dict["url"], maxPoolSize=300)
+        client = MongoClient(stock_conn_dict["url"])
         return client.stocks
     except:
         return None
@@ -160,7 +160,7 @@ class StocksDB:
         return result
 
     def find_stat_by_price_id(self, price_id):
-        with pymongo.timeout(20):
+        with pymongo.timeout(60):
             stat_cur = self._db["stockStatistic"].find({"priceId": price_id}).sort("statisticType", pymongo.ASCENDING)
         result = [stat for stat in stat_cur]
         stat_cur.close()

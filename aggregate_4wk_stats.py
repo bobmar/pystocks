@@ -112,3 +112,12 @@ aggr_db.drop_aggr_stats()
 print('Save aggregate statistics')
 x = aggr_db.save_aggr_stats(aggr_records)
 print('Aggregate records added: ', len(x.inserted_ids))
+result = aggr_db.calc_scan_params()
+if len(result) > 0:
+    aggr_param = result[0]
+    create_date = datetime.datetime.now(datetime.UTC)
+    aggr_param['createDate'] = create_date
+    del aggr_param['_id']
+    aggr_db.save_aggr_param(aggr_param)
+
+print(result[0])
