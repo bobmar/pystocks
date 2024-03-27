@@ -2,16 +2,17 @@ import pymongo
 from pymongo import MongoClient
 import json
 import datetime
+from pkg.repo import dbutil
 
 
-def open_db():
-    stock_conn_file = open("stock-db.json", "r")
-    stock_conn_dict = json.load(stock_conn_file)
-    try:
-        client = MongoClient(stock_conn_dict["url"])
-        return client.stocks
-    except:
-        return None
+# def open_db():
+#     stock_conn_file = open("stock-db.json", "r")
+#     stock_conn_dict = json.load(stock_conn_file)
+#     try:
+#         client = MongoClient(stock_conn_dict["url"])
+#         return client.stocks
+#     except:
+#         return None
 
 
 def calc_price_id(weeks, ticker, price_date):
@@ -31,7 +32,7 @@ def calc_price_id(weeks, ticker, price_date):
 class StocksDB:
 
     def __init__(self):
-        self._db = open_db()
+        self._db = dbutil.open_db()
         self._st_list = ["UPDNVOL50", "NETABVBLW50", "AVG20V200", "ZSCORE", "TRMOM", "DYPRCV50A", "DYPRCV200A", "STDDEV2WK", "STDDEV10WK"]
         self._st_list.sort()
         self._stat_dict = {
@@ -80,14 +81,14 @@ class StocksDB:
     def ibd_max_stat(self):
         ibd_stat_cur = self._db["ibdStatistic"].find().sort("priceDate", -1).limit(1)
         result = [ibd_stat for ibd_stat in ibd_stat_cur]
-        ibd_stat_cur.close()
+        # ibd_stat_cur.close()
         return result
 
     def ibd_unique_ticker(self):
         ibd_ticker_cur = self._db["ibdStatistic"].find({"priceDate": self.ibd_max_stat()[0]["priceDate"]})
         ibd_ticker_list = [ticker["tickerSymbol"] for ticker in ibd_ticker_cur]
         result = ibd_ticker_list
-        ibd_ticker_cur.close()
+        # ibd_ticker_cur.close()
         return result
 
     def ibd_ticker_delta(self):
@@ -100,7 +101,7 @@ class StocksDB:
         ibd_ticker_list = self.ibd_unique_ticker()
         print("Ticker count", len(ticker_list), "IBD ticker count", len(ibd_ticker_list))
         delta = list(set(ticker_list) - set(ibd_ticker_list))
-        ticker_cur.close()
+        # ticker_cur.close()
         return delta
 
     def stat_feature_dict(self, weeks, ticker_symbol, price_date):
@@ -111,19 +112,19 @@ class StocksDB:
         stat_features = {}
         for stat in stat_cur:
             stat_features.update({stat["statisticType"]: float(stat["statisticValue"])})
-        stat_cur.close()
+        # stat_cur.close()
         return stat_features
 
     def ibd_stat_list(self, ticker_symbol):
         ibd_stat_cur = self._db["ibdStatistic"].find({"tickerSymbol": ticker_symbol}).sort("priceDate", pymongo.DESCENDING)
         result = [ibd_stat for ibd_stat in ibd_stat_cur]
-        ibd_stat_cur.close()
+        # ibd_stat_cur.close()
         return result
 
     def ibd_stat_by_price_id(self, price_id):
         ibd_stat_cur = self._db["ibdStatistic"].find({"priceId": price_id})
         result = [ibd_stat for ibd_stat in ibd_stat_cur]
-        ibd_stat_cur.close()
+        # ibd_stat_cur.close()
         return result
 
     def find_pctchg_stats(self, stat_type, num_weeks, tickers):
@@ -136,34 +137,34 @@ class StocksDB:
                 if float(stat["statisticValue"]) > 0:
                     stats_dict.update(
                         {stat["priceId"]: (float(stat["statisticValue"]),) + tuple(stat_feat_dict.values())})
-        stats_cur.close()
+        # stats_cur.close()
         return stats_dict, list(stat_feat_dict.keys())
 
     def stat_type_list(self):
         stat_type_cur = self._db["statisticType"].find({}, {"_id": 1}).sort("_id", pymongo.ASCENDING)
         result = [stat_type["_id"] for stat_type in stat_type_cur]
-        stat_type_cur.close()
+        # stat_type_cur.close()
         return result
 
     def find_stat_by_type(self, stat_type, num_weeks, limit_cnt, asc_desc):
         start_date = datetime.datetime.now() - datetime.timedelta(weeks=num_weeks)
         stat_cur = self._db["stockStatistic"].find({"statisticType": stat_type, "priceDate": {"$gte": start_date}}).sort("statisticValue", asc_desc).limit(limit_cnt)
         result = [stat for stat in stat_cur]
-        stat_cur.close()
+        # stat_cur.close()
         return result
 
     def find_stat_by_ticker(self, ticker_symbol, price_date):
         stat_cur = self._db["stockStatistic"].find({"tickerSymbol": ticker_symbol, "priceDate": price_date}) \
             .sort("statisticType", pymongo.ASCENDING)
         result = [stat for stat in stat_cur]
-        stat_cur.close()
+        # stat_cur.close()
         return result
 
     def find_stat_by_price_id(self, price_id):
         with pymongo.timeout(60):
             stat_cur = self._db["stockStatistic"].find({"priceId": price_id}).sort("statisticType", pymongo.ASCENDING)
         result = [stat for stat in stat_cur]
-        stat_cur.close()
+        # stat_cur.close()
         return result
 
     def find_stats_by_tickers_and_stat_type(self, ticker_list, stat_type):
@@ -182,7 +183,7 @@ class StocksDB:
 
     def find_price_by_ticker(self, ticker_symbol):
         try:
-            with pymongo.timeout(20):
+            with pymongo.timeout(30):
                 price_cur = self._db["stockPrice"].find({"tickerSymbol": ticker_symbol}).sort("priceDate", pymongo.ASCENDING)
         except:
             print('Exception occurred')
