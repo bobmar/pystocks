@@ -2,6 +2,7 @@ import datetime
 from pkg.repo import stockdata as sd
 from pkg.repo import ibdstat as ibd
 from pkg.repo import aggrstat as aggr
+import json
 """
 Look for stock trades which have increased by a certain percentage in the last 4 weeks.
 Collect statistics from 4 weeks ago for further analysis.
@@ -120,4 +121,7 @@ if len(result) > 0:
     del aggr_param['_id']
     aggr_db.save_aggr_param(aggr_param)
 
+del result[0]['createDate']
+del result[0]['_id']
 print(result[0])
+print(json.dumps(result[0],indent=4))
