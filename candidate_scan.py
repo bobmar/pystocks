@@ -2,7 +2,7 @@ from pkg.repo import stockdata as sd
 from pkg.repo import ibdstat as ibd
 from pkg.repo import stockstat as ss
 from pkg.repo import aggrstat as aggr
-from pkg.repo import finratio as fr
+from pkg.repo import fininfo as fr
 """
 Candidate scan attempts to 'pattern match' successful stock performance by evaluating
 ratio of current price vs. average balance at 4 data points -- 10, 20, 50 and 200 day averages.
