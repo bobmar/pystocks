@@ -27,6 +27,12 @@ def find_fin_ratio(ticker_symbol):
     else:
         return None
 
+def find_fin_growth(ticker_symbol):
+    fin_growth = fr_db.find_growth(ticker_symbol)
+    if len(fin_growth) > 0:
+        return fin_growth[0]
+    else:
+        return None
 
 plus_minus_offset = .03
 avg_dly10_plus, avg_dly10_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs10'], plus_minus_offset)
@@ -35,7 +41,9 @@ avg_dly50_plus, avg_dly50_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs50'
 avg_dly200_plus, avg_dly200_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs200'], plus_minus_offset)
 
 ibd_stat_names = ['compositeRating', 'epsRating', 'relativeStrength', 'groupStrength', 'accumDist', 'salesMarginRoe', 'mgmtOwnPct', 'mgmtOwnPct']
-fin_ratio_names = ['currentRatio', 'quickRatio', 'returnOnAssets', 'returnOnEquity']
+fin_ratio_names = ['currentRatio', 'quickRatio', 'netProfitMargin', 'debtEquityRatio', 'returnOnEquity']
+fin_growth_names = ['revenueGrowth', 'netIncomeGrowth', 'epsgrowth', 'threeYRevenueGrowthPerShare', 'threeYNetIncomeGrowthPerShare']
+
 ss_db = ss.StatisticsDB()
 sdb = sd.StocksDB()
 ibd_db = ibd.IbdStatisticDB()
@@ -124,6 +132,10 @@ for stat in candidate_stats.keys():
         if fr is not None:
             for fr_name in fin_ratio_names:
                 cs[fr_name] = fr[fr_name]
+        fg = find_fin_growth(cs['tickerSymbol'])
+        if fg is not None:
+            for fg_name in fin_growth_names:
+                cs[fg_name] = fg[fg_name]
 
 saved_cnt = 0
 if len(candidate_stat_list) > 0:
