@@ -1,14 +1,4 @@
-from pymongo import MongoClient
-import json
-
-def open_db():
-    stock_conn_file = open("stock-db.json", "r")
-    stock_conn_dict = json.load(stock_conn_file)
-    try:
-        client = MongoClient(stock_conn_dict["url"], maxPoolSize=300)
-        return client.stocks
-    except:
-        return None
+from pkg.repo import dbutil
 
 
 coll_aggr_stat = 'aggrStatistics'
@@ -54,7 +44,7 @@ aggr_pipeline = [
 class AggregateStatDB:
 
     def __init__(self):
-        self._db = open_db()
+        self._db = dbutil.open_db()
 
     def calc_scan_params(self):
         aggr_col = self._db[coll_aggr_stat]

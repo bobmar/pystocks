@@ -1,16 +1,5 @@
 import pymongo
-from pymongo import MongoClient
-import json
-
-
-def open_db():
-    stock_conn_file = open("stock-db.json", "r")
-    stock_conn_dict = json.load(stock_conn_file)
-    try:
-        client = MongoClient(stock_conn_dict["url"])
-        return client.stocks
-    except:
-        return None
+from pkg.repo import dbutil
 
 
 coll_signal_type = "signalType"
@@ -19,12 +8,11 @@ coll_signal = "stockSignal"
 
 class SignalsDB:
     def __init__(self):
-        self._db = open_db()
+        self._db = dbutil.open_db()
 
     def signal_type_list(self):
         signal_type_cur = self._db[coll_signal_type].find()
         result = [signal_type for signal_type in signal_type_cur]
-        signal_type_cur.close()
         return result
 
     def find_signal_by_ticker(self, ticker_symbol):

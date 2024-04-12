@@ -1,18 +1,6 @@
 import pymongo
-from pymongo import MongoClient
-import json
 import datetime
 from pkg.repo import dbutil
-
-
-# def open_db():
-#     stock_conn_file = open("stock-db.json", "r")
-#     stock_conn_dict = json.load(stock_conn_file)
-#     try:
-#         client = MongoClient(stock_conn_dict["url"])
-#         return client.stocks
-#     except:
-#         return None
 
 
 def calc_price_id(weeks, ticker, price_date):
@@ -71,7 +59,6 @@ class StocksDB:
         else:
             ticker_cur = self._db["stockTicker"].find({}).limit(ticker_cnt)
         result = [ticker for ticker in ticker_cur]
-        ticker_cur.close()
         return result
 
     def delete_ticker_in_list(self, tickers):
@@ -81,7 +68,6 @@ class StocksDB:
     def ibd_max_stat(self):
         ibd_stat_cur = self._db["ibdStatistic"].find().sort("priceDate", -1).limit(1)
         result = [ibd_stat for ibd_stat in ibd_stat_cur]
-        # ibd_stat_cur.close()
         return result
 
     def ibd_unique_ticker(self):
@@ -112,19 +98,16 @@ class StocksDB:
         stat_features = {}
         for stat in stat_cur:
             stat_features.update({stat["statisticType"]: float(stat["statisticValue"])})
-        # stat_cur.close()
         return stat_features
 
     def ibd_stat_list(self, ticker_symbol):
         ibd_stat_cur = self._db["ibdStatistic"].find({"tickerSymbol": ticker_symbol}).sort("priceDate", pymongo.DESCENDING)
         result = [ibd_stat for ibd_stat in ibd_stat_cur]
-        # ibd_stat_cur.close()
         return result
 
     def ibd_stat_by_price_id(self, price_id):
         ibd_stat_cur = self._db["ibdStatistic"].find({"priceId": price_id})
         result = [ibd_stat for ibd_stat in ibd_stat_cur]
-        # ibd_stat_cur.close()
         return result
 
     def find_pctchg_stats(self, stat_type, num_weeks, tickers):
@@ -137,75 +120,54 @@ class StocksDB:
                 if float(stat["statisticValue"]) > 0:
                     stats_dict.update(
                         {stat["priceId"]: (float(stat["statisticValue"]),) + tuple(stat_feat_dict.values())})
-        # stats_cur.close()
         return stats_dict, list(stat_feat_dict.keys())
 
     def stat_type_list(self):
         stat_type_cur = self._db["statisticType"].find({}, {"_id": 1}).sort("_id", pymongo.ASCENDING)
         result = [stat_type["_id"] for stat_type in stat_type_cur]
-        # stat_type_cur.close()
         return result
 
     def find_stat_by_type(self, stat_type, num_weeks, limit_cnt, asc_desc):
         start_date = datetime.datetime.now() - datetime.timedelta(weeks=num_weeks)
         stat_cur = self._db["stockStatistic"].find({"statisticType": stat_type, "priceDate": {"$gte": start_date}}).sort("statisticValue", asc_desc).limit(limit_cnt)
         result = [stat for stat in stat_cur]
-        # stat_cur.close()
         return result
 
     def find_stat_by_ticker(self, ticker_symbol, price_date):
         stat_cur = self._db["stockStatistic"].find({"tickerSymbol": ticker_symbol, "priceDate": price_date}) \
             .sort("statisticType", pymongo.ASCENDING)
         result = [stat for stat in stat_cur]
-        # stat_cur.close()
         return result
 
     def find_stat_by_price_id(self, price_id):
         with pymongo.timeout(60):
             stat_cur = self._db["stockStatistic"].find({"priceId": price_id}).sort("statisticType", pymongo.ASCENDING)
         result = [stat for stat in stat_cur]
-        # stat_cur.close()
         return result
 
     def find_stats_by_tickers_and_stat_type(self, ticker_list, stat_type):
         stats_cur = self._db["stockStatistic"].find({"statisticType": stat_type, "tickerSymbol": {"$in": ticker_list}}) \
             .sort("priceDate")
         result = [stat for stat in stats_cur]
-        stats_cur.close()
         return result
 
     def find_selected_stat_by_price_id(self, price_id, stat_type_list):
         stat_cur = self._db.stockStatistic.find({"statisticType": {"$in": stat_type_list}, "priceId": price_id}) \
             .sort("statisticType")
-        result = [stat for stat in stat_cur]
-        stat_cur.close()
-        return result
+        return [stat for stat in stat_cur]
 
     def find_price_by_ticker(self, ticker_symbol):
-        try:
-            with pymongo.timeout(30):
-                price_cur = self._db["stockPrice"].find({"tickerSymbol": ticker_symbol}).sort("priceDate", pymongo.ASCENDING)
-        except:
-            print('Exception occurred')
-            price_cur.close()
-        if price_cur is not None:
-            result = [price for price in price_cur]
-            price_cur.close()
-        return result
+        price_cur = self._db["stockPrice"].find({"tickerSymbol": ticker_symbol}).sort("priceDate", pymongo.ASCENDING)
+        return [price for price in price_cur]
 
     def find_stat_by_ticker_and_type(self, ticker_symbol, stat_type):
         stat_cur = self._db["stockStatistic"].find({"tickerSymbol": ticker_symbol, "statisticType": stat_type}).sort("priceDate", pymongo.ASCENDING)
-        result = [stat for stat in stat_cur]
-        stat_cur.close()
-        return result
+        return [stat for stat in stat_cur]
 
     def find_signal_count(self, start_date):
         sig_cnt_cur = self._db["signalTypeCount"].find({"signalDate": {"$gte": start_date}}, {"signalDate": 1, "signalCode": 1, "signalCount": 1}).sort([("signalDate", pymongo.DESCENDING), ("signalCount", pymongo.DESCENDING)])
-        result = [sig_cnt for sig_cnt in sig_cnt_cur]
-        sig_cnt_cur.close()
-        return result
+        return [sig_cnt for sig_cnt in sig_cnt_cur]
 
     def find_price_dates(self, limit):
         price_date_cur = self._db["stockPrice"].distinct("priceDate")
-        result = sorted([price_date for price_date in price_date_cur], key=None, reverse=True)[0:limit]
-        return result
+        return sorted([price_date for price_date in price_date_cur], key=None, reverse=True)[0:limit]

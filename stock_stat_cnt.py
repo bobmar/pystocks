@@ -1,9 +1,11 @@
 from pkg.repo import stockdata as sd
 from pkg.service import statanalysissvc as sa
+from pkg.repo import fininfo as fr
 
 sa_svc = sa.StatisticAnalysisSvc()
 sdb = sd.StocksDB()
-ticker_list = sorted(sdb.ticker_symbol_list(700))
+fr_db = fr.FinancialRatio()
+ticker_list = sorted(sdb.ticker_symbol_list(800))
 signal_cnt_dict = {}
 
 
@@ -29,7 +31,11 @@ def format_number(float_val):
         return '(' + '{0:.2f}'.format(float_val) + ')'
 
 
-def process_stat(curr, four_wk, aggr_stat_curr, aggr_stat):
+def process_stat(curr, four_wk, aggr_stat_curr, aggr_stat, fin_growth_list):
+    if len(fin_growth_list) > 0:
+        fin_growth = fin_growth_list[0]
+    else:
+        fin_growth = {}
     print(curr, four_wk, "C:" + aggr_stat["ibdStat"]["compositeRating"],
           "RS:" + aggr_stat["ibdStat"]["relativeStrength"],
           "AD:" + aggr_stat["ibdStat"]["accumDist"],
@@ -37,8 +43,9 @@ def process_stat(curr, four_wk, aggr_stat_curr, aggr_stat):
           "->",
           format_number(aggr_stat_curr["stat"]["PCTCHG4WK"]),
           "<-",
-          'DV-50AVG:', '{0:.2f}'.format(aggr_stat['stat']['DYVOLV50A']),
-          'DP-50AVG:', '{0:.2f}'.format(aggr_stat['stat']['DYPRCV50A']),
+          'RevGrowth:' + format_number(fin_growth['revenueGrowth']),
+          'NetIncGrowth:' + format_number(fin_growth['netIncomeGrowth']),
+          'EPSGrowth:' + format_number(fin_growth['epsgrowth']),
           "Lists:", aggr_stat["ibdStat"]["listName"])
 
 
@@ -48,6 +55,7 @@ for ticker_symbol in ticker_list:
     signals = ''
     stat_obj = sa_svc.retrieve_stats(ticker_symbol)
     stat_aggr = sa.aggregate_stats_by_price_id(stat_obj)
+    fin_growth = fr_db.find_growth(ticker_symbol)
     stat_keys = list(stat_aggr)
     curr_idx = 0
     curr_key = 'No key'
@@ -59,10 +67,10 @@ for ticker_symbol in ticker_list:
         try:
             if curr_aggr["stat"]["PCTCHG4WK"] < -10:
                 top_loss_cnt += 1
-                process_stat(curr_key, four_wk_key, curr_aggr, four_wk_aggr)
+                process_stat(curr_key, four_wk_key, curr_aggr, four_wk_aggr, fin_growth)
             if curr_aggr["stat"]["PCTCHG4WK"] > 20:
                 top_return_cnt += 1
-                process_stat(curr_key, four_wk_key, curr_aggr, four_wk_aggr)
+                process_stat(curr_key, four_wk_key, curr_aggr, four_wk_aggr, fin_growth)
         except KeyError:
             print("KeyError for ", curr_key)
     else:
