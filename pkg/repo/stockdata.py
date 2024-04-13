@@ -20,7 +20,7 @@ def calc_price_id(weeks, ticker, price_date):
 class StocksDB:
 
     def __init__(self):
-        self._db = dbutil.open_db()
+        self._db = dbutil.get_client()
         self._st_list = ["UPDNVOL50", "NETABVBLW50", "AVG20V200", "ZSCORE", "TRMOM", "DYPRCV50A", "DYPRCV200A", "STDDEV2WK", "STDDEV10WK"]
         self._st_list.sort()
         self._stat_dict = {
@@ -73,9 +73,7 @@ class StocksDB:
     def ibd_unique_ticker(self):
         ibd_ticker_cur = self._db["ibdStatistic"].find({"priceDate": self.ibd_max_stat()[0]["priceDate"]})
         ibd_ticker_list = [ticker["tickerSymbol"] for ticker in ibd_ticker_cur]
-        result = ibd_ticker_list
-        # ibd_ticker_cur.close()
-        return result
+        return ibd_ticker_list
 
     def ibd_ticker_delta(self):
         """
@@ -87,7 +85,6 @@ class StocksDB:
         ibd_ticker_list = self.ibd_unique_ticker()
         print("Ticker count", len(ticker_list), "IBD ticker count", len(ibd_ticker_list))
         delta = list(set(ticker_list) - set(ibd_ticker_list))
-        # ticker_cur.close()
         return delta
 
     def stat_feature_dict(self, weeks, ticker_symbol, price_date):

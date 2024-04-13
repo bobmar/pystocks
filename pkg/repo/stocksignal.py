@@ -8,7 +8,7 @@ coll_signal = "stockSignal"
 
 class SignalsDB:
     def __init__(self):
-        self._db = dbutil.open_db()
+        self._db = dbutil.get_client()
 
     def signal_type_list(self):
         signal_type_cur = self._db[coll_signal_type].find()

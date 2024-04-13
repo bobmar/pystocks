@@ -5,7 +5,7 @@ coll_name = 'stockAveragePrice';
 
 class StockAveragePriceDB:
     def __init__(self):
-        self._db = dbutil.open_db()
+        self._db = dbutil.get_client()
 
     def find_by_price_date(self, price_date):
         avg_cur = self._db[coll_name].find({"priceDate": price_date})

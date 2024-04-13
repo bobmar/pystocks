@@ -6,7 +6,7 @@ coll_growth = 'financialGrowth'
 class FinancialRatio:
 
     def __init__(self):
-        self._db = dbutil.open_db()
+        self._db = dbutil.get_client()
 
     def find_ratios(self, ticker):
         ratio_cur = self._db[coll_ratio].find({'symbol': ticker}).sort('date', -1)

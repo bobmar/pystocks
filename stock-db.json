@@ -1,5 +1,5 @@
 {
-    "url":"mongodb://192.168.50.41:27017/stocks?connectTimeoutMS=120000&socketTimeoutMS=120000&auto_reconnect=true",
+    "url":"mongodb://192.168.50.41:27017/stocks?connectTimeoutMS=120000&socketTimeoutMS=120000",
     "weeklyOptUri": "/stocks/ticker/weeklyoptions",
     "restHost": "192.168.50.41",
     "restPort": "8080"

@@ -9,7 +9,7 @@ coll_stat_candidate = 'statCandidate'
 
 class StatisticsDB:
     def __init__(self):
-        self._db = dbutil.open_db()
+        self._db = dbutil.get_client()
 
     def stat_type_list(self):
         stat_type_cur = self._db[coll_stat_type].find()

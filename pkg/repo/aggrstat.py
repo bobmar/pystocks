@@ -44,7 +44,7 @@ aggr_pipeline = [
 class AggregateStatDB:
 
     def __init__(self):
-        self._db = dbutil.open_db()
+        self._db = dbutil.get_client()
 
     def calc_scan_params(self):
         aggr_col = self._db[coll_aggr_stat]

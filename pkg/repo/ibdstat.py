@@ -7,7 +7,7 @@ coll_name = "ibdStatistic"
 
 class IbdStatisticDB:
     def __init__(self):
-        self._db = dbutil.open_db()
+        self._db = dbutil.get_client()
 
     def find_stat_by_ticker(self, ticker_symbol):
         stat_cur = self._db[coll_name].find({"tickerSymbol": ticker_symbol}).sort([("priceDate", pymongo.DESCENDING)])
