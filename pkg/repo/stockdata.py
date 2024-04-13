@@ -137,8 +137,7 @@ class StocksDB:
         return result
 
     def find_stat_by_price_id(self, price_id):
-        with pymongo.timeout(60):
-            stat_cur = self._db["stockStatistic"].find({"priceId": price_id}).sort("statisticType", pymongo.ASCENDING)
+        stat_cur = self._db["stockStatistic"].find({"priceId": price_id}).sort("statisticType", pymongo.ASCENDING)
         result = [stat for stat in stat_cur]
         return result
 
