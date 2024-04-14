@@ -15,8 +15,7 @@ class IbdStatisticDB:
         return result
 
     def find_stat_by_price_id(self, price_id):
-        with pymongo.timeout(30):
-            stat_cur = self._db[coll_name].find({"_id": price_id})
+        stat_cur = self._db[coll_name].find({"_id": price_id})
         result = [stat for stat in stat_cur]
         return result
 
