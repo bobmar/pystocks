@@ -1,5 +1,4 @@
 from pkg.repo import stockdata as sd
-from pkg.repo import ibdstat as ibd
 from pkg.repo import stockstat as ss
 from pkg.repo import aggrstat as aggr
 from pkg.repo import fininfo as fr
@@ -46,7 +45,6 @@ fin_growth_names = ['revenueGrowth', 'netIncomeGrowth', 'epsgrowth', 'threeYReve
 
 ss_db = ss.StatisticsDB()
 sdb = sd.StocksDB()
-ibd_db = ibd.IbdStatisticDB()
 
 ticker_idx = 0
 candidate_stats = {}
@@ -90,17 +88,6 @@ for ticker in tickers:
                     candidate_stat[stat['statisticType']] = stat['statisticValue']
 
 
-def find_ibd_stat(candidate_stat):
-    ibd_stat = ibd_db.find_stat_by_price_id(candidate_stat['priceId'])
-    if len(ibd_stat) > 0:
-        candidate_stat['listCnt'] = len(ibd_stat[0]['listName'])
-        for ibd_stat_name in ibd_stat_names:
-            candidate_stat[ibd_stat_name] = ibd_stat[0][ibd_stat_name]
-        candidate_stat['foundIbd'] = True
-    else:
-        candidate_stat['foundIbd'] = False
-
-
 def find_ticker(ticker_symbol):
     ticker_match = {}
     for ticker in tickers:
@@ -123,11 +110,9 @@ for stat in candidate_stats.keys():
         if key in '|DYPRCV10A|DYPRCV20A|DYPRCV50A|DYPRCV200A|':
             keyCnt += 1
     if keyCnt == 4:
-        find_ibd_stat(cs)
-        if cs['foundIbd']:
-            ticker = find_ticker(cs['tickerSymbol'])
-            cs['weeklyOptions'] = ticker['weeklyOptions']
-            candidate_stat_list.append(cs)
+        ticker = find_ticker(cs['tickerSymbol'])
+        cs['weeklyOptions'] = ticker['weeklyOptions']
+        candidate_stat_list.append(cs)
         fr = find_fin_ratio(cs['tickerSymbol'])
         if fr is not None:
             for fr_name in fin_ratio_names:
