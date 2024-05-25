@@ -79,6 +79,7 @@ for stat in candidate_stats:
     print('Find statistics for ', price_id)
     stat_list = sdb.find_stat_by_price_id(price_id)
     print('Find IBD statistics for ', price_id)
+
     ibd_stats = ibd_db.find_stat_by_price_id(price_id)
     aggr_dict['_id'] = stat['priceId']
     aggr_dict['curr_four_wk_chg'] = stat['statisticValue']
@@ -91,7 +92,7 @@ for stat in candidate_stats:
         for sr in ibd_stat_names:
             if sr in ibd_stats[0]:
                 aggr_dict[sr] = ibd_stats[0][sr]
-        aggr_dict['listCnt'] = len(ibd_stats[0]['listName'])
+            aggr_dict['listCnt'] = len(ibd_stats[0]['listName'])
     print('Aggregate record', aggr_dict)
     stat_dict = {}
     for stat_item in stat_list:
@@ -101,9 +102,9 @@ for stat in candidate_stats:
         for stat_name in stat_names:
             if stat_name in stat_dict:
                 aggr_dict[stat_name] = stat_dict[stat_name]['statisticValue']
-    if len(ibd_stats) > 0:
-        aggr_dict['createDate'] = datetime.datetime.now(datetime.UTC)
-        aggr_records.append(aggr_dict)
+#    if len(ibd_stats) > 0:
+    aggr_dict['createDate'] = datetime.datetime.now(datetime.UTC)
+    aggr_records.append(aggr_dict)
     stat_handled_cnt += 1
     print(stat_handled_cnt, '/', stat_cnt)
 

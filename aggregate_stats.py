@@ -114,7 +114,7 @@ stat_type = {
 }
 
 tickers = retrieve_tickers()
-candidates = retrieve_candidate_stats(tickers[:10], stat_type["4"])
+candidates = retrieve_candidate_stats(tickers, stat_type["4"])
 aggr_records = aggregate_stats(candidates)
 replace_aggregate_stats_coll(aggr_records)
 scan_params = calc_scan_parameters()
