@@ -26,6 +26,7 @@ def find_fin_ratio(ticker_symbol):
     else:
         return None
 
+
 def find_fin_growth(ticker_symbol):
     fin_growth = fr_db.find_growth(ticker_symbol)
     if len(fin_growth) > 0:
@@ -33,15 +34,15 @@ def find_fin_growth(ticker_symbol):
     else:
         return None
 
+
 plus_minus_offset = .03
 avg_dly10_plus, avg_dly10_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs10'], plus_minus_offset)
 avg_dly20_plus, avg_dly20_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs20'], plus_minus_offset)
 avg_dly50_plus, avg_dly50_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs50'], plus_minus_offset)
 avg_dly200_plus, avg_dly200_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs200'], plus_minus_offset)
 
-ibd_stat_names = ['compositeRating', 'epsRating', 'relativeStrength', 'groupStrength', 'accumDist', 'salesMarginRoe', 'mgmtOwnPct', 'mgmtOwnPct']
-fin_ratio_names = ['currentRatio', 'quickRatio', 'netProfitMargin', 'debtEquityRatio', 'returnOnEquity']
-fin_growth_names = ['revenueGrowth', 'netIncomeGrowth', 'epsgrowth', 'threeYRevenueGrowthPerShare', 'threeYNetIncomeGrowthPerShare']
+fin_ratio_names = ['currentRatio', 'quickRatio', 'netProfitMargin', 'debtEquityRatio', 'returnOnEquity', 'operatingProfitMargin']
+fin_growth_names = ['revenueGrowth', 'netIncomeGrowth', 'epsgrowth', 'grossProfitGrowth', 'operatingIncomeGrowth', 'threeYRevenueGrowthPerShare', 'threeYOperatingCFGrowthPerShare', 'threeYNetIncomeGrowthPerShare']
 
 ss_db = ss.StatisticsDB()
 sdb = sd.StocksDB()
@@ -66,9 +67,9 @@ for ticker in tickers:
     price_chg_stats = ss_db.find_stat_by_ticker(ticker['_id'])
     for stat in price_chg_stats:
         if stat['statisticType'] in full_stat_types:
-            try:
+            if stat['priceId'] in candidate_stats:
                 candidate_stat = candidate_stats[stat['priceId']]
-            except KeyError:
+            else:
                 candidate_stat = {'tickerSymbol': stat['tickerSymbol'], 'priceId': stat['priceId'], 'priceDate': stat['priceDate']}
                 candidate_stats[stat['priceId']] = candidate_stat
             if stat['statisticType'] in asis_stat_types:
