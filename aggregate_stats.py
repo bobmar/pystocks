@@ -15,6 +15,11 @@ pct_increase1 = 12
 pct_increase2 = 20
 ibd_stat_names = ['compositeRating', 'epsRating', 'relativeStrength', 'groupStrength', 'accumDist', 'salesMarginRoe', 'mgmtOwnPct', 'mgmtOwnPct']
 stat_names = ['STDDEV2WK', 'STDDEV10WK', 'UPDNVOL50', 'DYPRCV50A', 'DYPRCV10A', 'DYPRCV200A', 'ZSCORE', 'TRMOM', 'DYPRCV20A', 'DYVOLV20A', 'DYVOLV50A', 'DYVOLV200A']
+stat_type = {
+    "4": "PCTCHG4WK",
+    "8": "PCTCHG8WK",
+    "12": "PCTCHG12WK",
+}
 
 
 def retrieve_tickers():
@@ -107,14 +112,13 @@ def calc_scan_parameters():
     return result
 
 
-stat_type = {
-    "4": "PCTCHG4WK",
-    "8": "PCTCHG8WK",
-    "12": "PCTCHG12WK",
-}
+stat_type_sel = "4"
+stat_type_input = input("Enter stat_type selector (4, 8, or 12):")
+if stat_type_input in ("4", "8", "12"):
+    stat_type_sel = stat_type_input
 
 tickers = retrieve_tickers()
-candidates = retrieve_candidate_stats(tickers, stat_type["4"])
+candidates = retrieve_candidate_stats(tickers, stat_type[stat_type_sel])
 aggr_records = aggregate_stats(candidates)
 replace_aggregate_stats_coll(aggr_records)
 scan_params = calc_scan_parameters()
