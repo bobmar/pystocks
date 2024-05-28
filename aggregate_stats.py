@@ -87,7 +87,7 @@ def aggregate_stats(candidate_stats, period):
                 if stat_name in stat_dict:
                     aggr_dict[stat_name] = stat_dict[stat_name]['statisticValue']
         aggr_dict['createDate'] = datetime.datetime.now(datetime.UTC)
-        aggr_dict['statType'] = stat_type
+        aggr_dict['statType'] = period
         aggr_records.append(aggr_dict)
         stat_handled_cnt += 1
         print(stat_handled_cnt, '/', stat_cnt)
