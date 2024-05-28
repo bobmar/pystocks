@@ -58,7 +58,7 @@ def find_hist_price(p_price_list, price_id, period_cnt):
     return period_price_id, period_price_date
 
 
-def aggregate_stats(candidate_stats):
+def aggregate_stats(candidate_stats, period):
     stat_cnt = len(candidate_stats)
     print('Found ', stat_cnt, ' stats')
     aggr_records = []
@@ -87,6 +87,7 @@ def aggregate_stats(candidate_stats):
                 if stat_name in stat_dict:
                     aggr_dict[stat_name] = stat_dict[stat_name]['statisticValue']
         aggr_dict['createDate'] = datetime.datetime.now(datetime.UTC)
+        aggr_dict['statType'] = stat_type
         aggr_records.append(aggr_dict)
         stat_handled_cnt += 1
         print(stat_handled_cnt, '/', stat_cnt)
@@ -119,7 +120,7 @@ if stat_type_input in ("4", "8", "12"):
 
 tickers = retrieve_tickers()
 candidates = retrieve_candidate_stats(tickers, stat_type[stat_type_sel])
-aggr_records = aggregate_stats(candidates)
+aggr_records = aggregate_stats(candidates, stat_type[stat_type_sel])
 replace_aggregate_stats_coll(aggr_records)
 scan_params = calc_scan_parameters()
 if len(scan_params) > 0:
