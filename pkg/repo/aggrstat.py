@@ -7,7 +7,7 @@ coll_aggr_param = 'aggrStatParam'
 aggr_pipeline = [
   {
     "$match": {
-      "curr_four_wk_chg": {
+      "curr_price_chg": {
         "$gte": 0.0,
       },
     },

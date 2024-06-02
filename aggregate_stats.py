@@ -15,8 +15,6 @@ stat_type = {
 
 pct_increase1 = 12
 pct_increase2 = 20
-ibd_stat_names = ['compositeRating', 'epsRating', 'relativeStrength', 'groupStrength', 'accumDist', 'salesMarginRoe',
-                  'mgmtOwnPct', 'mgmtOwnPct']
 stat_names = ['STDDEV2WK', 'STDDEV10WK', 'UPDNVOL50', 'DYPRCV50A', 'DYPRCV10A', 'DYPRCV200A', 'ZSCORE', 'TRMOM',
               'DYPRCV20A', 'DYVOLV20A', 'DYVOLV50A', 'DYVOLV200A']
 
@@ -78,7 +76,7 @@ def aggregate_stats(candidate_stats, period):
         print('Find statistics for ', price_id)
         stat_list = sdb.find_stat_by_price_id(price_id)
         aggr_dict['_id'] = stat['priceId']
-        aggr_dict['curr_four_wk_chg'] = stat['statisticValue']
+        aggr_dict['curr_price_chg'] = stat['statisticValue']
         if price_date is not None:
             aggr_dict['hist_price_date'] = price_date.strftime('%Y-%m-%d')
         else:
@@ -89,15 +87,20 @@ def aggregate_stats(candidate_stats, period):
             stat_dict[stat_item['statisticType']] = stat_item
 
         if len(stat_list) > 0:
+            stat_found = 0
             for stat_name in stat_names:
                 if stat_name in stat_dict:
+                    stat_found += 1
                     aggr_dict[stat_name] = stat_dict[stat_name]['statisticValue']
-        aggr_dict['createDate'] = datetime.datetime.now(datetime.UTC)
-        aggr_dict['statType'] = stat_type[period]
-        aggr_dict['priceDateOffset'] = price_date_offset
-        aggr_records.append(aggr_dict)
-        stat_handled_cnt += 1
-        print(stat_handled_cnt, '/', stat_cnt)
+            if stat_found == len(stat_names):
+                aggr_dict['createDate'] = datetime.datetime.now(datetime.UTC)
+                aggr_dict['statType'] = stat_type[period]
+                aggr_dict['priceDateOffset'] = price_date_offset
+                aggr_records.append(aggr_dict)
+                stat_handled_cnt += 1
+                print(stat_handled_cnt, '/', stat_cnt)
+            else:
+                print("Did not find all statistic names; skipping {}".format(aggr_dict['_id']))
     return aggr_records
 
 
@@ -136,7 +139,6 @@ if len(scan_params) > 0:
     aggr_param['createDate'] = create_date
     del aggr_param['_id']
     aggr_db.save_aggr_param(aggr_param)
-
-del scan_params[0]['createDate']
-del scan_params[0]['_id']
-print(json.dumps(scan_params[0], indent=4))
+    del scan_params[0]['createDate']
+    del scan_params[0]['_id']
+    print(json.dumps(scan_params[0], indent=4))
