@@ -7,31 +7,36 @@ MongoDB clients
 """
 sdb = sd.StocksDB()
 aggr_db = aggr.AggregateStatDB()
-
-num_weeks = 4
-periods_per_week = 5
-price_date_offset = (num_weeks*periods_per_week)-1
-pct_increase1 = 12
-pct_increase2 = 20
-ibd_stat_names = ['compositeRating', 'epsRating', 'relativeStrength', 'groupStrength', 'accumDist', 'salesMarginRoe', 'mgmtOwnPct', 'mgmtOwnPct']
-stat_names = ['STDDEV2WK', 'STDDEV10WK', 'UPDNVOL50', 'DYPRCV50A', 'DYPRCV10A', 'DYPRCV200A', 'ZSCORE', 'TRMOM', 'DYPRCV20A', 'DYVOLV20A', 'DYVOLV50A', 'DYVOLV200A']
 stat_type = {
     "4": "PCTCHG4WK",
     "8": "PCTCHG8WK",
     "12": "PCTCHG12WK",
 }
 
+pct_increase1 = 12
+pct_increase2 = 20
+ibd_stat_names = ['compositeRating', 'epsRating', 'relativeStrength', 'groupStrength', 'accumDist', 'salesMarginRoe',
+                  'mgmtOwnPct', 'mgmtOwnPct']
+stat_names = ['STDDEV2WK', 'STDDEV10WK', 'UPDNVOL50', 'DYPRCV50A', 'DYPRCV10A', 'DYPRCV200A', 'ZSCORE', 'TRMOM',
+              'DYPRCV20A', 'DYVOLV20A', 'DYVOLV50A', 'DYVOLV200A']
+
+
+def calc_price_date_offset(stat_period):
+    num_weeks = int(stat_period)
+    periods_per_week = 5
+    return (num_weeks * periods_per_week) - 1
+
 
 def retrieve_tickers():
-    tickers = sdb.ticker_symbol_list(800)
-    print('Found ', len(tickers), ' tickers')
-    return tickers
+    ticker_list = sdb.ticker_symbol_list(800)
+    print('Found ', len(ticker_list), ' tickers')
+    return ticker_list
 
 
-def retrieve_candidate_stats(ticker_list, stat_type):
+def retrieve_candidate_stats(ticker_list, stat_sel):
     candidate_stats = []
     for ticker in ticker_list:
-        price_chg_stats = sdb.find_stat_by_ticker_and_type(ticker, stat_type)
+        price_chg_stats = sdb.find_stat_by_ticker_and_type(ticker, stat_type[stat_sel])
         print('Found ', len(price_chg_stats), ' price change stats for ', ticker)
         for stat in price_chg_stats:
             if pct_increase1 <= stat['statisticValue'] < pct_increase2:
@@ -63,6 +68,7 @@ def aggregate_stats(candidate_stats, period):
     print('Found ', stat_cnt, ' stats')
     aggr_records = []
     stat_handled_cnt = 0
+    price_date_offset = calc_price_date_offset(period)
     for stat in candidate_stats:
         aggr_dict = {}
         print('Find current prices for ', stat['tickerSymbol'])
@@ -74,9 +80,9 @@ def aggregate_stats(candidate_stats, period):
         aggr_dict['_id'] = stat['priceId']
         aggr_dict['curr_four_wk_chg'] = stat['statisticValue']
         if price_date is not None:
-            aggr_dict['four_wk_price_date'] = price_date.strftime('%Y-%m-%d')
+            aggr_dict['hist_price_date'] = price_date.strftime('%Y-%m-%d')
         else:
-            aggr_dict['four_wk_price_date'] = price_id
+            aggr_dict['hist_price_date'] = price_id
 
         stat_dict = {}
         for stat_item in stat_list:
@@ -87,7 +93,8 @@ def aggregate_stats(candidate_stats, period):
                 if stat_name in stat_dict:
                     aggr_dict[stat_name] = stat_dict[stat_name]['statisticValue']
         aggr_dict['createDate'] = datetime.datetime.now(datetime.UTC)
-        aggr_dict['statType'] = period
+        aggr_dict['statType'] = stat_type[period]
+        aggr_dict['priceDateOffset'] = price_date_offset
         aggr_records.append(aggr_dict)
         stat_handled_cnt += 1
         print(stat_handled_cnt, '/', stat_cnt)
@@ -105,11 +112,11 @@ def replace_aggregate_stats_coll(aggr_records):
 def calc_scan_parameters():
     result = aggr_db.calc_scan_params()
     if len(result) > 0:
-        aggr_param = result[0]
-        create_date = datetime.datetime.now(datetime.UTC)
-        aggr_param['createDate'] = create_date
-        del aggr_param['_id']
-        aggr_db.save_aggr_param(aggr_param)
+        aggr_parm = result[0]
+        crt_date = datetime.datetime.now(datetime.UTC)
+        aggr_parm['createDate'] = crt_date
+        del aggr_parm['_id']
+        aggr_db.save_aggr_param(aggr_parm)
     return result
 
 
@@ -119,9 +126,9 @@ if stat_type_input in ("4", "8", "12"):
     stat_type_sel = stat_type_input
 
 tickers = retrieve_tickers()
-candidates = retrieve_candidate_stats(tickers, stat_type[stat_type_sel])
-aggr_records = aggregate_stats(candidates, stat_type[stat_type_sel])
-replace_aggregate_stats_coll(aggr_records)
+candidates = retrieve_candidate_stats(tickers, stat_type_sel)
+aggr_entries = aggregate_stats(candidates, stat_type_sel)
+replace_aggregate_stats_coll(aggr_entries)
 scan_params = calc_scan_parameters()
 if len(scan_params) > 0:
     aggr_param = scan_params[0]
@@ -132,4 +139,4 @@ if len(scan_params) > 0:
 
 del scan_params[0]['createDate']
 del scan_params[0]['_id']
-print(json.dumps(scan_params[0],indent=4))
+print(json.dumps(scan_params[0], indent=4))
