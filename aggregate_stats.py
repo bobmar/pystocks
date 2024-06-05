@@ -14,7 +14,7 @@ stat_type = {
 }
 
 pct_increase1 = 12
-pct_increase2 = 20
+pct_increase2 = 49
 stat_names = ['STDDEV2WK', 'STDDEV10WK', 'UPDNVOL50', 'DYPRCV50A', 'DYPRCV10A', 'DYPRCV200A', 'ZSCORE', 'TRMOM',
               'DYPRCV20A', 'DYVOLV20A', 'DYVOLV50A', 'DYVOLV200A']
 
