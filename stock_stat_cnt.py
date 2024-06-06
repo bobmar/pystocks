@@ -36,17 +36,13 @@ def process_stat(curr, four_wk, aggr_stat_curr, aggr_stat, fin_growth_list):
         fin_growth = fin_growth_list[0]
     else:
         fin_growth = {}
-    print(curr, four_wk, "C:" + aggr_stat["ibdStat"]["compositeRating"],
-          "RS:" + aggr_stat["ibdStat"]["relativeStrength"],
-          "AD:" + aggr_stat["ibdStat"]["accumDist"],
-          "G:" + aggr_stat["ibdStat"]["groupStrength"],
+    print(curr, four_wk,
           "->",
           format_number(aggr_stat_curr["stat"]["PCTCHG4WK"]),
           "<-",
           'RevGrowth:' + format_number(fin_growth['revenueGrowth']),
           'NetIncGrowth:' + format_number(fin_growth['netIncomeGrowth']),
-          'EPSGrowth:' + format_number(fin_growth['epsgrowth']),
-          "Lists:", aggr_stat["ibdStat"]["listName"])
+          'EPSGrowth:' + format_number(fin_growth['epsgrowth']))
 
 
 top_return_cnt = 0

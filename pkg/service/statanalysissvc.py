@@ -8,17 +8,16 @@ def aggregate_stats_by_price_id(stat_obj):
     signal_dict = stat_obj["signal_dict"]
     stat_dict = stat_obj["stat_dict"]
     stat_aggr = {}
-    for ibd_stat in ibd_list:
-        try:
-            stat_aggr_item = stat_aggr[ibd_stat["_id"]]
-        except KeyError:
+    for price_id in stat_dict.keys():
+        if price_id in stat_aggr:
+            stat_aggr_item = stat_aggr[price_id]
+        else:
             stat_aggr_item = {}
-            stat_aggr[ibd_stat["_id"]] = stat_aggr_item
-        stat_aggr_item["ibdStat"] = ibd_stat
-        if ibd_stat["_id"] in signal_dict:
-            stat_aggr_item["signalList"] = signal_dict[ibd_stat["_id"]]
-        if ibd_stat["_id"] in stat_dict:
-            stat_aggr_item["stat"] = stat_dict[ibd_stat["_id"]]
+            stat_aggr[price_id] = stat_aggr_item
+        if price_id in signal_dict:
+            stat_aggr_item["signalList"] = signal_dict[price_id]
+        if price_id in stat_dict:
+            stat_aggr_item["stat"] = stat_dict[price_id]
     return stat_aggr
 
 
