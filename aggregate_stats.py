@@ -68,6 +68,7 @@ def aggregate_stats(candidate_stats, period):
     stat_handled_cnt = 0
     price_date_offset = calc_price_date_offset(period)
     for stat in candidate_stats:
+        stat_handled_cnt += 1
         aggr_dict = {}
         print('Find current prices for ', stat['tickerSymbol'])
         price_list = sdb.find_price_by_ticker(stat['tickerSymbol'])
@@ -97,10 +98,9 @@ def aggregate_stats(candidate_stats, period):
                 aggr_dict['statType'] = stat_type[period]
                 aggr_dict['priceDateOffset'] = price_date_offset
                 aggr_records.append(aggr_dict)
-                stat_handled_cnt += stat_found
-                print(stat_handled_cnt, '/', stat_cnt)
             else:
                 print("Did not find all statistic names; skipping {}".format(aggr_dict['_id']))
+        print(stat_handled_cnt, '/', stat_cnt)
     return aggr_records
 
 
