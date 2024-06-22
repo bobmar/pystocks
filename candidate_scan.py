@@ -2,6 +2,7 @@ from pkg.repo import stockdata as sd
 from pkg.repo import stockstat as ss
 from pkg.repo import aggrstat as aggr
 from pkg.repo import fininfo as fr
+from pkg.repo import stockavg as ad
 """
 Candidate scan attempts to 'pattern match' successful stock performance by evaluating
 ratio of current price vs. average balance at 4 data points -- 10, 20, 50 and 200 day averages.
@@ -11,6 +12,7 @@ a 4 week period (determined by aggregate_4wk_stats.py and summarized by aggr_sta
 aggr_db = aggr.AggregateStatDB()
 avgBalLevels = aggr_db.find_aggr_newest()
 fr_db = fr.FinancialRatio()
+avg_db = ad.StockAveragePriceDB()
 
 
 def calc_plus_minus(input_value, offset):
@@ -42,8 +44,10 @@ avg_dly50_plus, avg_dly50_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs50'
 avg_dly200_plus, avg_dly200_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs200'], plus_minus_offset)
 
 fin_ratio_names = ['currentRatio', 'quickRatio', 'netProfitMargin', 'debtEquityRatio', 'returnOnEquity',
-                   'operatingProfitMargin', 'debtEquityRatio']
-fin_growth_names = ['revenueGrowth', 'netIncomeGrowth', 'epsgrowth', 'grossProfitGrowth', 'operatingIncomeGrowth', 'threeYRevenueGrowthPerShare', 'threeYOperatingCFGrowthPerShare', 'threeYNetIncomeGrowthPerShare']
+                   'operatingProfitMargin', 'debtEquityRatio', 'priceSalesRatio', 'priceSalesRatio']
+fin_growth_names = ['revenueGrowth', 'netIncomeGrowth', 'epsgrowth', 'grossProfitGrowth', 'operatingIncomeGrowth',
+                    'threeYRevenueGrowthPerShare', 'threeYOperatingCFGrowthPerShare', 'threeYNetIncomeGrowthPerShare',
+                    'operatingCashFlowGrowth', 'operatingCashFlowGrowth', 'freeCashFlowGrowth']
 
 ss_db = ss.StatisticsDB()
 sdb = sd.StocksDB()
@@ -115,6 +119,11 @@ for stat in candidate_stats.keys():
         ticker = find_ticker(cs['tickerSymbol'])
         cs['weeklyOptions'] = ticker['weeklyOptions']
         candidate_stat_list.append(cs)
+        avg_entry = avg_db.find_by_price_id(cs['priceId'])
+        for avg_item in avg_entry['avgList']:
+            if avg_item['daysCnt'] == 50:
+                cs['avgVolume'] = avg_item['avgVolume']
+                break
         fr = find_fin_ratio(cs['tickerSymbol'])
         if fr is not None:
             for fr_name in fin_ratio_names:

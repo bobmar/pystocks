@@ -97,7 +97,7 @@ def aggregate_stats(candidate_stats, period):
                 aggr_dict['statType'] = stat_type[period]
                 aggr_dict['priceDateOffset'] = price_date_offset
                 aggr_records.append(aggr_dict)
-                stat_handled_cnt += 1
+                stat_handled_cnt += stat_found
                 print(stat_handled_cnt, '/', stat_cnt)
             else:
                 print("Did not find all statistic names; skipping {}".format(aggr_dict['_id']))

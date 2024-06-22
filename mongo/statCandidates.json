@@ -8,10 +8,28 @@
         UPDNVOL50: {
           $gt: 1.0
         },
+        currentRatio: {
+          $gt: 1.0
+        },
+        quickRatio: {
+          $gt: 1.0
+        },
+        epsgrowth: {
+          $gt: 0
+        },
+        grossProfitGrowth: {
+          $gt: 0
+        },
         netProfitMargin: {
           $gt: 0
         },
+        netIncomeGrowth: {
+          $gt: 0
+        },
         returnOnEquity: {
+          $gt: 0
+        },
+        revenueGrowth: {
           $gt: 0
         },
         operatingProfitMargin: {
