@@ -1,7 +1,7 @@
 import json
 
 file_dir = "c:/Users/rober/Downloads"
-file_name = "Contributory_XXX264_Transactions_20240601-011413.json"
+file_name = "Contributory_XXX264_Transactions_20240625-024350.json"
 
 tran_file = open(file_dir + '/' + file_name)
 tran_json = json.load(tran_file)

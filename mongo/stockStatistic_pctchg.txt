@@ -1,0 +1,84 @@
+[
+  {
+    $addFields:
+      /**
+       * newField: The new field name.
+       * expression: The new field expression.
+       */
+      {
+        numDays: {
+          $dateDiff: {
+            startDate: "$priceDate",
+            endDate: new Date(),
+            unit: "day"
+          }
+        }
+      }
+  },
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        statisticType: "PCTCHG4WK",
+        statisticValue: {
+          $gt: 0
+        },
+        numDays: {
+          $lt: 30
+        }
+      }
+  },
+  // {
+  //   $bucketAuto:
+  //     /**
+  //      * groupBy: The expression to group by.
+  //      * buckets: The desired number of buckets
+  //      * output: {
+  //      *   outputN: Optional. The output object may contain a single or numerous field names used to accumulate values per bucket.
+  //      * }
+  //      * granularity: Optional number series
+  //      */
+  //     {
+  //       groupBy: "$statisticValue",
+  //       buckets: 5,
+  //       granularity: "E6"
+  //     }
+  // },
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: null,
+        sampleSize: {
+          $sum: 1
+        },
+        avgGain: {
+          $avg: "$statisticValue"
+        },
+        medGain: {
+          $median: {
+            input: "$statisticValue",
+            method: "approximate"
+          }
+        },
+        minGain: {
+          $min: "$statisticValue"
+        },
+        maxGain: {
+          $max: "$statisticValue"
+        },
+        percentile: {
+          $percentile: {
+            input: "$statisticValue",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        }
+      }
+  }
+]
