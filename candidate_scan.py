@@ -44,10 +44,11 @@ avg_dly50_plus, avg_dly50_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs50'
 avg_dly200_plus, avg_dly200_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs200'], plus_minus_offset)
 
 fin_ratio_names = ['currentRatio', 'quickRatio', 'netProfitMargin', 'debtEquityRatio', 'returnOnEquity',
-                   'operatingProfitMargin', 'debtEquityRatio', 'priceSalesRatio', 'priceSalesRatio']
+                   'returnOnAssets', 'cashFlowToDebtRatio', 'freeCashFlowPerShare', 'operatingCashFlowSalesRatio',
+                   'operatingProfitMargin', 'debtEquityRatio', 'priceSalesRatio', 'priceCashFlowRatio']
 fin_growth_names = ['revenueGrowth', 'netIncomeGrowth', 'epsgrowth', 'grossProfitGrowth', 'operatingIncomeGrowth',
                     'threeYRevenueGrowthPerShare', 'threeYOperatingCFGrowthPerShare', 'threeYNetIncomeGrowthPerShare',
-                    'operatingCashFlowGrowth', 'operatingCashFlowGrowth', 'freeCashFlowGrowth']
+                    'operatingCashFlowGrowth', 'operatingCashFlowGrowth', 'freeCashFlowGrowth', 'assetGrowth']
 
 ss_db = ss.StatisticsDB()
 sdb = sd.StocksDB()
