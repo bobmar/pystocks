@@ -3,6 +3,7 @@ from pkg.repo import stockstat as ss
 from pkg.repo import aggrstat as aggr
 from pkg.repo import fininfo as fr
 from pkg.repo import stockavg as ad
+from pkg.common import fin_attributes as attr
 """
 Candidate scan attempts to 'pattern match' successful stock performance by evaluating
 ratio of current price vs. average balance at 4 data points -- 10, 20, 50 and 200 day averages.
@@ -43,12 +44,13 @@ avg_dly20_plus, avg_dly20_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs20'
 avg_dly50_plus, avg_dly50_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs50'], plus_minus_offset)
 avg_dly200_plus, avg_dly200_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs200'], plus_minus_offset)
 
-fin_ratio_names = ['currentRatio', 'quickRatio', 'netProfitMargin', 'debtEquityRatio', 'returnOnEquity',
-                   'returnOnAssets', 'cashFlowToDebtRatio', 'freeCashFlowPerShare', 'operatingCashFlowSalesRatio',
-                   'operatingProfitMargin', 'debtEquityRatio', 'priceSalesRatio', 'priceCashFlowRatio']
-fin_growth_names = ['revenueGrowth', 'netIncomeGrowth', 'epsgrowth', 'grossProfitGrowth', 'operatingIncomeGrowth',
-                    'threeYRevenueGrowthPerShare', 'threeYOperatingCFGrowthPerShare', 'threeYNetIncomeGrowthPerShare',
-                    'operatingCashFlowGrowth', 'operatingCashFlowGrowth', 'freeCashFlowGrowth', 'assetGrowth']
+
+#fin_ratio_names = ['currentRatio', 'quickRatio', 'netProfitMargin', 'debtEquityRatio', 'returnOnEquity',
+#                   'returnOnAssets', 'cashFlowToDebtRatio', 'freeCashFlowPerShare', 'operatingCashFlowSalesRatio',
+#                   'operatingProfitMargin', 'debtEquityRatio', 'priceSalesRatio', 'priceCashFlowRatio']
+#fin_growth_names = ['revenueGrowth', 'netIncomeGrowth', 'epsgrowth', 'grossProfitGrowth', 'operatingIncomeGrowth',
+#                    'threeYRevenueGrowthPerShare', 'threeYOperatingCFGrowthPerShare', 'threeYNetIncomeGrowthPerShare',
+#                    'operatingCashFlowGrowth', 'operatingCashFlowGrowth', 'freeCashFlowGrowth', 'assetGrowth']
 
 ss_db = ss.StatisticsDB()
 sdb = sd.StocksDB()
@@ -127,11 +129,11 @@ for stat in candidate_stats.keys():
                 break
         fr = find_fin_ratio(cs['tickerSymbol'])
         if fr is not None:
-            for fr_name in fin_ratio_names:
+            for fr_name in attr.fin_ratio_names:
                 cs[fr_name] = fr[fr_name]
         fg = find_fin_growth(cs['tickerSymbol'])
         if fg is not None:
-            for fg_name in fin_growth_names:
+            for fg_name in attr.fin_growth_names:
                 cs[fg_name] = fg[fg_name]
 
 saved_cnt = 0
