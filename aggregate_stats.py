@@ -2,6 +2,7 @@ import json
 import datetime
 from pkg.repo import stockdata as sd
 from pkg.repo import aggrstat as aggr
+from pkg.common import fin_attributes as fin_attr
 """
 MongoDB clients
 """
@@ -61,6 +62,14 @@ def find_hist_price(p_price_list, price_id, period_cnt):
     return period_price_id, period_price_date
 
 
+def update_with_financial(aggr_dict, ticker):
+    fr = fin_attr.retrieve_fin_ratio(ticker)
+    if fr is not None:
+        aggr_dict.update(fr)
+    fg = fin_attr.retrieve_fin_growth(ticker)
+    if fg is not None:
+        aggr_dict.update(fg)
+
 def aggregate_stats(candidate_stats, period):
     stat_cnt = len(candidate_stats)
     print('Found ', stat_cnt, ' stats')
@@ -94,6 +103,7 @@ def aggregate_stats(candidate_stats, period):
                     stat_found += 1
                     aggr_dict[stat_name] = stat_dict[stat_name]['statisticValue']
             if stat_found == len(stat_names):
+                update_with_financial(aggr_dict, stat['tickerSymbol'])
                 aggr_dict['createDate'] = datetime.datetime.now(datetime.UTC)
                 aggr_dict['statType'] = stat_type[period]
                 aggr_dict['priceDateOffset'] = price_date_offset
