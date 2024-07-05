@@ -4,6 +4,7 @@ from pkg.repo import ibdstat as ibd
 from pkg.repo import aggrstat as aggr
 import json
 """
+DEPRECATED -- replaced by aggregate_stats.py
 Look for stock trades which have increased by a certain percentage in the last 4 weeks.
 Collect statistics from 4 weeks ago for further analysis.
 """

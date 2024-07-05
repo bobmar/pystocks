@@ -67,7 +67,7 @@ full_stat_types = filter_stat_types + asis_stat_types
 
 """
 Retrieve a list of candidate tickers which have average balance ratios within the desired range which was determined
-by the aggreage_4wk_stats.py program.
+by the aggregate_stats.py program.
 """
 for ticker in tickers:
     ticker_idx += 1
@@ -127,14 +127,12 @@ for stat in candidate_stats.keys():
             if avg_item['daysCnt'] == 50:
                 cs['avgVolume'] = avg_item['avgVolume']
                 break
-        fr = find_fin_ratio(cs['tickerSymbol'])
+        fr = attr.retrieve_fin_ratio(cs['tickerSymbol'])
         if fr is not None:
-            for fr_name in attr.fin_ratio_names:
-                cs[fr_name] = fr[fr_name]
-        fg = find_fin_growth(cs['tickerSymbol'])
+            cs.update(fr)
+        fg = attr.retrieve_fin_growth(cs['tickerSymbol'])
         if fg is not None:
-            for fg_name in attr.fin_growth_names:
-                cs[fg_name] = fg[fg_name]
+            cs.update(fg)
 
 saved_cnt = 0
 if len(candidate_stat_list) > 0:
