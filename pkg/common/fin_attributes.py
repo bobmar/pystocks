@@ -32,7 +32,8 @@ def retrieve_fin_growth(ticker):
     if f_growth is not None:
         fg_attr = {}
         for fg_name in fin_growth_names:
-            fg_attr[fg_name] = f_growth[fg_name]
+            if fg_name in f_growth.keys():
+                fg_attr[fg_name] = f_growth[fg_name]
     return fg_attr
 
 
@@ -42,5 +43,6 @@ def retrieve_fin_ratio(ticker):
     if f_ratio is not None:
         fr_attr = {}
         for fr_name in fin_ratio_names:
-            fr_attr[fr_name] = f_ratio[fr_name]
+            if fr_name in f_ratio.keys():
+                fr_attr[fr_name] = f_ratio[fr_name]
     return fr_attr
