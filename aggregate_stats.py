@@ -1,5 +1,7 @@
 import json
 import datetime
+import sys
+
 from pkg.repo import stockdata as sd
 from pkg.repo import aggrstat as aggr
 from pkg.common import fin_attributes as fin_attr
@@ -134,7 +136,11 @@ def calc_scan_parameters():
 
 
 stat_type_sel = "4"
-stat_type_input = input("Enter stat_type selector (4, 8, or 12):")
+if len(sys.argv) > 1:
+    stat_type_input = sys.argv[1]
+else:
+    stat_type_input = input("Enter stat_type selector (4, 8, or 12):")
+
 if stat_type_input in ("4", "8", "12"):
     stat_type_sel = stat_type_input
 
