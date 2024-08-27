@@ -136,7 +136,7 @@ for stat in candidate_stats.keys():
         fg = attr.retrieve_fin_growth(cs['tickerSymbol'])
         if fg is not None:
             cs.update(fg)
-        cs['create_date'] = create_date
+        cs['createDate'] = create_date
 
 saved_cnt = 0
 if len(candidate_stat_list) > 0:
