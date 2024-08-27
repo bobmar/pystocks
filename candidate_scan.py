@@ -1,3 +1,5 @@
+import datetime
+
 from pkg.repo import stockdata as sd
 from pkg.repo import stockstat as ss
 from pkg.repo import aggrstat as aggr
@@ -107,6 +109,7 @@ def find_ticker(ticker_symbol):
 
 
 candidate_stat_list = []
+create_date = datetime.datetime.now(datetime.UTC)
 
 """
 For the candidates having the desired ratios, retrieve IBD statistics and weekly option indicator.
@@ -133,6 +136,7 @@ for stat in candidate_stats.keys():
         fg = attr.retrieve_fin_growth(cs['tickerSymbol'])
         if fg is not None:
             cs.update(fg)
+        cs['create_date'] = create_date
 
 saved_cnt = 0
 if len(candidate_stat_list) > 0:
