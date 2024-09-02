@@ -183,7 +183,7 @@
           $round: ["$avgroe", 4]
         },
         netProfitMargin: {
-          $round: ["$netProfitMargin", 4]
+          $round: ["$avgnetProfitMargin", 4]
         },
         netIncomeGrowth: {
           $round: ["$avgnetIncomeGrowth", 4]
