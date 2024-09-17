@@ -2,7 +2,10 @@ from pkg.repo import fininfo as fr
 
 fin_ratio_names = ['currentRatio', 'quickRatio', 'netProfitMargin', 'debtEquityRatio', 'returnOnEquity',
                    'returnOnAssets', 'cashFlowToDebtRatio', 'freeCashFlowPerShare', 'operatingCashFlowSalesRatio',
-                   'operatingProfitMargin', 'debtEquityRatio', 'priceSalesRatio', 'priceCashFlowRatio']
+                   'operatingProfitMargin', 'debtEquityRatio', 'priceSalesRatio', 'priceCashFlowRatio',
+                   'cashRatio', 'grossProfitMargin', 'pretaxProfitMargin', 'returnOnCapitalEmployed',
+                   'ebitPerRevenue', 'operatingCashFlowPerShare', 'freeCashFlowOperatingCashFlowRatio',
+                   'cashFlowCoverageRatios' ]
 fin_growth_names = ['revenueGrowth', 'netIncomeGrowth', 'epsgrowth', 'grossProfitGrowth', 'operatingIncomeGrowth',
                     'threeYRevenueGrowthPerShare', 'threeYOperatingCFGrowthPerShare', 'threeYNetIncomeGrowthPerShare',
                     'epsdilutedGrowth', 'operatingCashFlowGrowth', 'freeCashFlowGrowth', 'assetGrowth']
