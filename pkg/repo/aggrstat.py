@@ -5,39 +5,50 @@ coll_aggr_stat = 'aggrStatistics'
 coll_aggr_param = 'aggrStatParam'
 
 aggr_pipeline = [
-  {
-    "$match": {
-      "curr_price_chg": {
-        "$gte": 0.0,
-      },
-    },
-  },
-  {
-    "$group": {
-      "_id": None,
-      "avgStdDev2Week": {
-        "$avg": "$STDDEV2WK",
-      },
-      "avgStdDev10Week": {
-        "$avg": "$STDDEV10WK",
-      },
-      "avgUpDownVol": {
-        "$avg": "$UPDNVOL50",
-      },
-      "avgDlyPriceVs10": {
-        "$avg": "$DYPRCV10A",
-      },
-      "avgDlyPriceVs20": {
-        "$avg": "$DYPRCV20A",
-      },
-      "avgDlyPriceVs50": {
-        "$avg": "$DYPRCV50A",
-      },
-      "avgDlyPriceVs200": {
-        "$avg": "$DYPRCV200A",
-      },
-    },
-  },
+    {
+        '$match': {
+            'curr_price_chg': {
+                '$gte': 0.0
+            }
+        }
+    }, {
+        '$group': {
+            '_id': None,
+            'avgStdDev2Week': {
+                '$avg': '$STDDEV2WK'
+            },
+            'avgStdDev10Week': {
+                '$avg': '$STDDEV10WK'
+            },
+            'avgUpDownVol': {
+                '$avg': '$UPDNVOL50'
+            },
+            'avgDlyPriceVs10': {
+                '$avg': '$DYPRCV10A'
+            },
+            'avgDlyPriceVs20': {
+                '$avg': '$DYPRCV20A'
+            },
+            'avgDlyPriceVs50': {
+                '$avg': '$DYPRCV50A'
+            },
+            'avgDlyPriceVs200': {
+                '$avg': '$DYPRCV200A'
+            },
+            'emaDlyPriceVs10': {
+                '$avg': '$DYPRCV10E'
+            },
+            'emaDlyPriceVs20': {
+                '$avg': '$DYPRCV20E'
+            },
+            'emaDlyPriceVs50': {
+                '$avg': '$DYPRCV50E'
+            },
+            'emaDlyPriceVs200': {
+                '$avg': '$DYPRCV200E'
+            }
+        }
+    }
 ]
 
 
