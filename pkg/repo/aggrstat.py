@@ -35,16 +35,16 @@ aggr_pipeline = [
             'avgDlyPriceVs200': {
                 '$avg': '$DYPRCV200A'
             },
-            'emaDlyPriceVs10': {
+            'avgDlyPriceVs10e': {
                 '$avg': '$DYPRCV10E'
             },
-            'emaDlyPriceVs20': {
+            'avgDlyPriceVs20e': {
                 '$avg': '$DYPRCV20E'
             },
-            'emaDlyPriceVs50': {
+            'avgDlyPriceVs50e': {
                 '$avg': '$DYPRCV50E'
             },
-            'emaDlyPriceVs200': {
+            'avgDlyPriceVs200e': {
                 '$avg': '$DYPRCV200E'
             }
         }
