@@ -1,4 +1,5 @@
 import datetime
+import sys
 
 from pkg.repo import stockdata as sd
 from pkg.repo import stockstat as ss
@@ -10,12 +11,17 @@ from pkg.common import fin_attributes as attr
 Candidate scan attempts to 'pattern match' successful stock performance by evaluating
 ratio of current price vs. average balance at 4 data points -- 10, 20, 50 and 200 day averages.
 Successful pattern is determined by retrieving ratios for stocks which increase more than 10% in
-a 4 week period (determined by aggregate_4wk_stats.py and summarized by aggr_stat_param.py).
+a 4, 8 or 12 week period (determined by aggregate_stats.py and summarized by aggr_stat_param.py).
 """
 aggr_db = aggr.AggregateStatDB()
 avgBalLevels = aggr_db.find_aggr_newest()
 fr_db = fr.FinancialRatio()
 avg_db = ad.StockAveragePriceDB()
+
+if len(sys.argv) > 1:
+    EMA_OR_SIMPLE = sys.argv[1]
+else:
+    EMA_OR_SIMPLE = input("Enter (E)MA or (S)imple")
 
 
 def calc_plus_minus(input_value, offset):
@@ -46,19 +52,55 @@ avg_dly20_plus, avg_dly20_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs20'
 avg_dly50_plus, avg_dly50_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs50'], plus_minus_offset)
 avg_dly200_plus, avg_dly200_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs200'], plus_minus_offset)
 
+avg_dly10e_plus, avg_dly10e_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs10e'], plus_minus_offset)
+avg_dly20e_plus, avg_dly20e_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs20e'], plus_minus_offset)
+avg_dly50e_plus, avg_dly50e_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs50e'], plus_minus_offset)
+avg_dly200e_plus, avg_dly200e_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs200e'], plus_minus_offset)
 
 ss_db = ss.StatisticsDB()
 sdb = sd.StocksDB()
 
 ticker_idx = 0
 candidate_stats = {}
-tickers = sdb.ticker_list(800)
+MAX_TICKERS = 800
+tickers = sdb.ticker_list(MAX_TICKERS)
 ticker_size = len(tickers)
 price_chg_stats = []
 four_wk_stats = []
-filter_stat_types = '|DYPRCV10A|DYPRCV20A|DYPRCV50A|DYPRCV200A|'
+filter_stat_types = '|DYPRCV10A|DYPRCV20A|DYPRCV50A|DYPRCV200A|DYPRCV10E|DYPRCV20E|DYPRCV50E|DYPRCV200E|'
 asis_stat_types = '|STDDEV2WK|STDDEV10WK|UPDNVOL50|DYVOLV10A|DYVOLV20A|DYVOLV50A|DYVOLV200A|'
 full_stat_types = filter_stat_types + asis_stat_types
+
+
+def set_avg_ratio(candidate_stat, stat):
+    if stat['statisticType'] == 'DYPRCV10A':
+        if avg_dly10_plus >= stat['statisticValue'] > avg_dly10_minus:
+            candidate_stat[stat['statisticType']] = stat['statisticValue']
+    if stat['statisticType'] == 'DYPRCV20A':
+        if avg_dly20_plus >= stat['statisticValue'] > avg_dly20_minus:
+            candidate_stat[stat['statisticType']] = stat['statisticValue']
+    if stat['statisticType'] == 'DYPRCV50A':
+        if avg_dly50_plus >= stat['statisticValue'] > avg_dly50_minus:
+            candidate_stat[stat['statisticType']] = stat['statisticValue']
+    if stat['statisticType'] == 'DYPRCV200A':
+        if avg_dly200_plus > stat['statisticValue'] > avg_dly200_minus:
+            candidate_stat[stat['statisticType']] = stat['statisticValue']
+
+
+def set_ema_ratio(candidate_stat, stat):
+    if stat['statisticType'] == 'DYPRCV10E':
+        if avg_dly10e_plus >= stat['statisticValue'] > avg_dly10e_minus:
+            candidate_stat[stat['statisticType']] = stat['statisticValue']
+    if stat['statisticType'] == 'DYPRCV20E':
+        if avg_dly20e_plus >= stat['statisticValue'] > avg_dly20e_minus:
+            candidate_stat[stat['statisticType']] = stat['statisticValue']
+    if stat['statisticType'] == 'DYPRCV50E':
+        if avg_dly50e_plus >= stat['statisticValue'] > avg_dly50e_minus:
+            candidate_stat[stat['statisticType']] = stat['statisticValue']
+    if stat['statisticType'] == 'DYPRCV200E':
+        if avg_dly200e_plus > stat['statisticValue'] > avg_dly200e_minus:
+            candidate_stat[stat['statisticType']] = stat['statisticValue']
+
 
 """
 Retrieve a list of candidate tickers which have average balance ratios within the desired range which was determined
@@ -77,19 +119,10 @@ for ticker in tickers:
                 candidate_stats[stat['priceId']] = candidate_stat
             if stat['statisticType'] in asis_stat_types:
                 candidate_stat[stat['statisticType']] = stat['statisticValue']
-
-            if stat['statisticType'] == 'DYPRCV10A':
-                if avg_dly10_plus >= stat['statisticValue'] > avg_dly10_minus:
-                    candidate_stat[stat['statisticType']] = stat['statisticValue']
-            if stat['statisticType'] == 'DYPRCV20A':
-                if avg_dly20_plus >= stat['statisticValue'] > avg_dly20_minus:
-                    candidate_stat[stat['statisticType']] = stat['statisticValue']
-            if stat['statisticType'] == 'DYPRCV50A':
-                if avg_dly50_plus >= stat['statisticValue'] > avg_dly50_minus:
-                    candidate_stat[stat['statisticType']] = stat['statisticValue']
-            if stat['statisticType'] == 'DYPRCV200A':
-                if avg_dly200_plus > stat['statisticValue'] > avg_dly200_minus:
-                    candidate_stat[stat['statisticType']] = stat['statisticValue']
+            if EMA_OR_SIMPLE == 'S':
+                set_avg_ratio(candidate_stat, stat)
+            if EMA_OR_SIMPLE == 'E':
+                set_ema_ratio(candidate_stat, stat)
 
 
 def find_ticker(ticker_symbol):
@@ -112,7 +145,7 @@ for stat in candidate_stats.keys():
     cs = candidate_stats[stat]
     keyCnt = 0
     for key in cs.keys():
-        if key in '|DYPRCV10A|DYPRCV20A|DYPRCV50A|DYPRCV200A|':
+        if key in filter_stat_types:
             keyCnt += 1
     if keyCnt == 4:
         ticker = find_ticker(cs['tickerSymbol'])
@@ -142,4 +175,10 @@ print('avgDlyPriceVs10:', avgBalLevels['avgDlyPriceVs10'])
 print('avgDlyPriceVs20:', avgBalLevels['avgDlyPriceVs20'])
 print('avgDlyPriceVs50:', avgBalLevels['avgDlyPriceVs50'])
 print('avgDlyPriceVs200:', avgBalLevels['avgDlyPriceVs200'])
+print('EMA balance ratios')
+print('avgDlyPriceVs10e:', avgBalLevels['avgDlyPriceVs10e'])
+print('avgDlyPriceVs20e:', avgBalLevels['avgDlyPriceVs20e'])
+print('avgDlyPriceVs50e:', avgBalLevels['avgDlyPriceVs50e'])
+print('avgDlyPriceVs200e:', avgBalLevels['avgDlyPriceVs200e'])
+
 print('Plus/Minus offset:', plus_minus_offset)
