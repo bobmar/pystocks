@@ -22,6 +22,8 @@ if len(sys.argv) > 1:
     EMA_OR_SIMPLE = sys.argv[1]
 else:
     EMA_OR_SIMPLE = input("Enter (E)MA or (S)imple")
+EMA_OR_SIMPLE = EMA_OR_SIMPLE.upper()
+print('EMA_OR_SIMPLE=', EMA_OR_SIMPLE)
 
 
 def calc_plus_minus(input_value, offset):
