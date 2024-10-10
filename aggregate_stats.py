@@ -41,7 +41,7 @@ def retrieve_candidate_stats(ticker_list, stat_sel):
         price_chg_stats = sdb.find_stat_by_ticker_and_type(ticker, stat_type[stat_sel])
         print('Found ', len(price_chg_stats), ' price change stats for ', ticker)
         for stat in price_chg_stats:
-            if pct_increase1 <= stat['statisticValue'] < pct_increase2:
+            if pct_increase1 <= stat['statisticValue'] <= pct_increase2:
                 candidate_stats.append(stat)
     stat_cnt = len(candidate_stats)
     print('Found ', stat_cnt, ' stats')
