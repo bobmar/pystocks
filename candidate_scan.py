@@ -48,7 +48,7 @@ def find_fin_growth(ticker_symbol):
         return None
 
 
-plus_minus_offset = .03
+plus_minus_offset = .02
 avg_dly10_plus, avg_dly10_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs10'], plus_minus_offset)
 avg_dly20_plus, avg_dly20_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs20'], plus_minus_offset)
 avg_dly50_plus, avg_dly50_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs50'], plus_minus_offset)
@@ -165,6 +165,7 @@ for stat in candidate_stats.keys():
         if fg is not None:
             cs.update(fg)
         cs['createDate'] = create_date
+        cs['emaOrSimple'] = EMA_OR_SIMPLE
 
 saved_cnt = 0
 if len(candidate_stat_list) > 0:
