@@ -155,6 +155,7 @@ if len(scan_params) > 0:
     aggr_param = scan_params[0]
     create_date = datetime.datetime.now(datetime.UTC)
     aggr_param['createDate'] = create_date
+    aggr_param['statType'] = stat_type[stat_type_sel]
     del aggr_param['_id']
     aggr_db.save_aggr_param(aggr_param)
     del scan_params[0]['createDate']
