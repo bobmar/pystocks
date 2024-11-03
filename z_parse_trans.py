@@ -1,7 +1,7 @@
 import json
 
 file_dir = "c:/Users/rober/Downloads"
-file_name = "Contributory_XXX264_Transactions_20240831-010106.json"
+file_name = "Contributory_XXX264_Transactions_20241101-022213.json"
 
 tran_file = open(file_dir + '/' + file_name)
 tran_json = json.load(tran_file)
@@ -27,7 +27,8 @@ def sum_trans(action):
 
 def print_summary(summary):
     for key in summary.keys():
-        print(key, summary[key])
+        summary_amt = round(summary[key], 2)
+        print(key, summary_amt)
 
 
 def aggregate_summary(summary, aggregate):
@@ -46,25 +47,25 @@ call_summary = sum_trans(sell_call_action)
 print_summary(call_summary)
 aggregate_summary(call_summary, total_income)
 
-print("Dividends (Qualified)")
+print("\nDividends (Qualified)")
 qual_dividends = sum_trans(qual_div)
 print_summary(qual_dividends)
 aggregate_summary(qual_dividends, total_income)
 
-print("Dividends (Non-qualified)")
+print("\nDividends (Non-qualified)")
 non_qual_dividends = sum_trans(non_qual_div)
 print_summary(non_qual_dividends)
 aggregate_summary(non_qual_dividends, total_income)
 
-print("Reinvest Dividends")
+print("\nReinvest Dividends")
 reinv_summary = sum_trans(reinv_div)
 print_summary(reinv_summary)
 aggregate_summary(reinv_summary, total_income)
 
-print("CD Interest")
+print("\nCD Interest")
 cd_summary = sum_trans(cd_interest)
 print_summary(cd_summary)
 aggregate_summary(cd_summary, total_income)
 
-print("Total Income")
+print("\nTotal Income")
 print_summary(total_income)
