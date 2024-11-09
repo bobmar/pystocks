@@ -26,6 +26,9 @@
         netIncomeGrowth: {
           $gt: 0
         },
+        cashFlowToDebtRatio: {
+          $gt: 0
+        },
         returnOnEquity: {
           $gt: 0
         },
@@ -36,6 +39,9 @@
           $gt: 0
         },
         operatingIncomeGrowth: {
+          $gt: 0
+        },
+        freeCashFlowPerShare: {
           $gt: 0
         },
         avgVolume: {
@@ -226,7 +232,8 @@
        * Provide any number of field/order pairs.
        */
       {
-        end: -1
+        end: -1,
+        count: -1
       }
   }
 ]
