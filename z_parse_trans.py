@@ -1,6 +1,7 @@
 import json
+import os
 
-file_dir = "c:/Users/rober/Downloads"
+file_dir = os.environ["USERPROFILE"] + "\\Downloads"
 file_name = "Contributory_XXX264_Transactions.json"
 
 tran_file = open(file_dir + '/' + file_name)
