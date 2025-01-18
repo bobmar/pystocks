@@ -18,11 +18,15 @@ avgBalLevels = aggr_db.find_aggr_newest()
 fr_db = fr.FinancialRatio()
 avg_db = ad.StockAveragePriceDB()
 
+EMA_OR_SIMPLE = ''
 if len(sys.argv) > 1:
     EMA_OR_SIMPLE = sys.argv[1]
+    if EMA_OR_SIMPLE not in ['E', 'S']:
+        EMA_OR_SIMPLE = 'E'
 else:
-    EMA_OR_SIMPLE = input("Enter (E)MA or (S)imple")
-EMA_OR_SIMPLE = EMA_OR_SIMPLE.upper()
+    while EMA_OR_SIMPLE not in ['E', 'S']:
+        EMA_OR_SIMPLE = input("Enter (E)MA or (S)imple")
+        EMA_OR_SIMPLE = EMA_OR_SIMPLE.upper()
 print('EMA_OR_SIMPLE=', EMA_OR_SIMPLE)
 
 
