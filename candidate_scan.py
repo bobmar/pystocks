@@ -172,7 +172,10 @@ if len(candidate_stat_list) > 0:
     print('Uploading...')
     ss_db.drop_candidate_stat()
     saved_cnt = ss_db.save_candidate_stat(candidate_stat_list)
-print('Saved ', len(saved_cnt.inserted_ids), ' candidates')
+if type(saved_cnt) is int:
+    print('Saved ', saved_cnt, ' candidates')
+else:
+    print('Saved ', len(saved_cnt.inserted_ids), ' candidates')
 print('Average balance ratios')
 print('avgDlyPriceVs10:', avgBalLevels['avgDlyPriceVs10'])
 print('avgDlyPriceVs20:', avgBalLevels['avgDlyPriceVs20'])
