@@ -41,32 +41,35 @@ def aggregate_summary(summary, aggregate):
     return aggregate
 
 
+def accumulate_trans():
+    print("Covered Call Summary")
+    call_summary = sum_trans(sell_call_action)
+    print_summary(call_summary)
+    aggregate_summary(call_summary, total_income)
+
+    print("\nDividends (Qualified)")
+    qual_dividends = sum_trans(qual_div)
+    print_summary(qual_dividends)
+    aggregate_summary(qual_dividends, total_income)
+
+    print("\nDividends (Non-qualified)")
+    non_qual_dividends = sum_trans(non_qual_div)
+    print_summary(non_qual_dividends)
+    aggregate_summary(non_qual_dividends, total_income)
+
+    print("\nReinvest Dividends")
+    reinv_summary = sum_trans(reinv_div)
+    print_summary(reinv_summary)
+    aggregate_summary(reinv_summary, total_income)
+
+    print("\nCD Interest")
+    cd_summary = sum_trans(cd_interest)
+    print_summary(cd_summary)
+    aggregate_summary(cd_summary, total_income)
+
+
 total_income = {}
-
-print("Covered Call Summary")
-call_summary = sum_trans(sell_call_action)
-print_summary(call_summary)
-aggregate_summary(call_summary, total_income)
-
-print("\nDividends (Qualified)")
-qual_dividends = sum_trans(qual_div)
-print_summary(qual_dividends)
-aggregate_summary(qual_dividends, total_income)
-
-print("\nDividends (Non-qualified)")
-non_qual_dividends = sum_trans(non_qual_div)
-print_summary(non_qual_dividends)
-aggregate_summary(non_qual_dividends, total_income)
-
-print("\nReinvest Dividends")
-reinv_summary = sum_trans(reinv_div)
-print_summary(reinv_summary)
-aggregate_summary(reinv_summary, total_income)
-
-print("\nCD Interest")
-cd_summary = sum_trans(cd_interest)
-print_summary(cd_summary)
-aggregate_summary(cd_summary, total_income)
+accumulate_trans()
 
 print("\nTotal Income")
 print_summary(total_income)
