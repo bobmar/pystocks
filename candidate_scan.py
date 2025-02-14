@@ -18,11 +18,15 @@ avgBalLevels = aggr_db.find_aggr_newest()
 fr_db = fr.FinancialRatio()
 avg_db = ad.StockAveragePriceDB()
 
+EMA_OR_SIMPLE = ''
 if len(sys.argv) > 1:
     EMA_OR_SIMPLE = sys.argv[1]
+    if EMA_OR_SIMPLE not in ['E', 'S']:
+        EMA_OR_SIMPLE = 'E'
 else:
-    EMA_OR_SIMPLE = input("Enter (E)MA or (S)imple")
-EMA_OR_SIMPLE = EMA_OR_SIMPLE.upper()
+    while EMA_OR_SIMPLE not in ['E', 'S']:
+        EMA_OR_SIMPLE = input("Enter (E)MA or (S)imple")
+        EMA_OR_SIMPLE = EMA_OR_SIMPLE.upper()
 print('EMA_OR_SIMPLE=', EMA_OR_SIMPLE)
 
 
@@ -172,7 +176,10 @@ if len(candidate_stat_list) > 0:
     print('Uploading...')
     ss_db.drop_candidate_stat()
     saved_cnt = ss_db.save_candidate_stat(candidate_stat_list)
-print('Saved ', len(saved_cnt.inserted_ids), ' candidates')
+if type(saved_cnt) is int:
+    print('Saved ', saved_cnt, ' candidates')
+else:
+    print('Saved ', len(saved_cnt.inserted_ids), ' candidates')
 print('Average balance ratios')
 print('avgDlyPriceVs10:', avgBalLevels['avgDlyPriceVs10'])
 print('avgDlyPriceVs20:', avgBalLevels['avgDlyPriceVs20'])
