@@ -12,6 +12,8 @@ qual_div = "Qualified Dividend"
 non_qual_div = "Non-Qualified Div"
 reinv_div = "Reinvest Dividend"
 
+action_list = [sell_call_action, cd_interest, qual_div, non_qual_div, reinv_div]
+
 
 def sum_trans(action):
     summary = {}
@@ -41,35 +43,17 @@ def aggregate_summary(summary, aggregate):
     return aggregate
 
 
-def accumulate_trans():
-    print("Covered Call Summary")
-    call_summary = sum_trans(sell_call_action)
-    print_summary(call_summary)
-    aggregate_summary(call_summary, total_income)
+def accumulate_transactions(action):
+    print('\n'+action)
+    summary = sum_trans(action)
+    print_summary(summary)
+    aggregate_summary(summary, total_income)
 
-    print("\nDividends (Qualified)")
-    qual_dividends = sum_trans(qual_div)
-    print_summary(qual_dividends)
-    aggregate_summary(qual_dividends, total_income)
-
-    print("\nDividends (Non-qualified)")
-    non_qual_dividends = sum_trans(non_qual_div)
-    print_summary(non_qual_dividends)
-    aggregate_summary(non_qual_dividends, total_income)
-
-    print("\nReinvest Dividends")
-    reinv_summary = sum_trans(reinv_div)
-    print_summary(reinv_summary)
-    aggregate_summary(reinv_summary, total_income)
-
-    print("\nCD Interest")
-    cd_summary = sum_trans(cd_interest)
-    print_summary(cd_summary)
-    aggregate_summary(cd_summary, total_income)
 
 
 total_income = {}
-accumulate_trans()
+for action in action_list:
+    accumulate_transactions(action)
 
 print("\nTotal Income")
 print_summary(total_income)
