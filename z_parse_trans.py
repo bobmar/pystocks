@@ -15,8 +15,7 @@ reinv_div = "Reinvest Dividend"
 action_list = [sell_call_action, cd_interest, qual_div, non_qual_div, reinv_div]
 
 
-def sum_trans(action):
-    summary = {}
+def sum_trans(action, summary):
     for tran in tran_json["BrokerageTransactions"]:
         if tran["Action"] == action:
             tran_yyyymm = tran["Date"][-4:] + tran["Date"][:2]
@@ -45,7 +44,8 @@ def aggregate_summary(summary, aggregate):
 
 def accumulate_transactions(action):
     print('\n'+action)
-    summary = sum_trans(action)
+    summary = {}
+    summary = sum_trans(action, summary)
     print_summary(summary)
     aggregate_summary(summary, total_income)
 
