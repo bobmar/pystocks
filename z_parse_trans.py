@@ -50,7 +50,6 @@ def accumulate_transactions(action):
     aggregate_summary(summary, total_income)
 
 
-
 total_income = {}
 for action in action_list:
     accumulate_transactions(action)
