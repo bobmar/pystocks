@@ -14,6 +14,9 @@
         quickRatio: {
           $gt: 1.0
         },
+        $expr: {
+          $ne: ["$currentRatio", "$quickRatio"]
+        },
         epsgrowth: {
           $gt: 0
         },
@@ -24,6 +27,9 @@
           $gt: 0
         },
         netIncomeGrowth: {
+          $gt: 0
+        },
+        cashFlowToDebtRatio: {
           $gt: 0
         },
         returnOnEquity: {
@@ -37,6 +43,12 @@
         },
         operatingIncomeGrowth: {
           $gt: 0
+        },
+        freeCashFlowPerShare: {
+          $gt: 0
+        },
+        avgVolume: {
+          $gt: 400000
         }
       }
   },
@@ -54,46 +66,64 @@
         updn: {
           $avg: "$UPDNVOL50"
         },
+        updnmed: {
+          $median: {
+            input: "$UPDNVOL50",
+            method: "approximate"
+          }
+        },
         updnmin: {
           $min: "$UPDNVOL50"
         },
         updnmax: {
           $max: "$UPDNVOL50"
         },
-        dyvolv20a: {
+        avgdyvolv20a: {
           $avg: "$DYVOLV20A"
         },
-        dyvolv50a: {
+        avgdyvolv50a: {
           $avg: "$DYVOLV50A"
         },
-        dyvolv200a: {
+        avgdyvolv200a: {
           $avg: "$DYVOLV200A"
         },
-        currRatio: {
+        avgcurrRatio: {
           $avg: "$currentRatio"
         },
-        quickRatio: {
+        avgquickRatio: {
           $avg: "$quickRatio"
         },
-        roe: {
+        avgroe: {
           $avg: "$returnOnEquity"
         },
-        netProfitMargin: {
+        avgnetProfitMargin: {
           $avg: "$netProfitMargin"
         },
-        netIncomeGrowth: {
+        avgnetIncomeGrowth: {
           $avg: "$netIncomeGrowth"
         },
-        epsgrowth: {
+        avgepsgrowth: {
           $avg: "$epsgrowth"
         },
-        operatingProfitMargin: {
+        avgoperatingProfitMargin: {
           $avg: "$operatingProfitMargin"
         },
-        operatingIncomeGrowth: {
+        avgoperatingIncomeGrowth: {
           $avg: "$operatingIncomeGrowth"
         },
-        threeYRevenueGrowthPerShare: {
+        avgrevenueGrowth: {
+          $avg: "$revenueGrowth"
+        },
+        avggrossProfitGrowth: {
+          $avg: "$grossProfitGrowth"
+        },
+        avgcashFlowToDebtRatio: {
+          $avg: "$cashFlowToDebtRatio"
+        },
+        avgfreeCashFlowPerShare: {
+          $avg: "$freeCashFlowPerShare"
+        },
+        avgthreeYRevenueGrowthPerShare: {
           $avg: "$threeYRevenueGrowthPerShare"
         },
         begin: {
@@ -123,11 +153,90 @@
       }
   },
   {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        _id: 1,
+        count: 1,
+        updn: {
+          $round: ["$updn", 4]
+        },
+        updnmed: {
+          $round: ["$updnmed", 4]
+        },
+        updnmin: {
+          $round: ["$updnmin", 4]
+        },
+        updnmax: {
+          $round: ["$updnmax", 4]
+        },
+        dyvolv20a: {
+          $round: ["$avgdyvolv20a", 4]
+        },
+        dyvolv50a: {
+          $round: ["$avgdyvolv50a", 4]
+        },
+        dyvolv200a: {
+          $round: ["$avgdyvolv200a", 4]
+        },
+        currRatio: {
+          $round: ["$avgcurrRatio", 4]
+        },
+        quickRatio: {
+          $round: ["$avgquickRatio", 4]
+        },
+        roe: {
+          $round: ["$avgroe", 4]
+        },
+        netProfitMargin: {
+          $round: ["$avgnetProfitMargin", 4]
+        },
+        netIncomeGrowth: {
+          $round: ["$avgnetIncomeGrowth", 4]
+        },
+        epsgrowth: {
+          $round: ["$avgepsgrowth", 4]
+        },
+        operatingProfitMargin: {
+          $round: ["$avgoperatingProfitMargin", 4]
+        },
+        operatingIncomeGrowth: {
+          $round: ["$avgoperatingIncomeGrowth", 4]
+        },
+        revenueGrowth: {
+          $round: ["$avgrevenueGrowth", 4]
+        },
+        grossProfitGrowth: {
+          $round: ["$avggrossProfitGrowth", 4]
+        },
+        cashFlowToDebtRatio: {
+          $round: ["$avgcashFlowToDebtRatio", 4]
+        },
+        freeCashFlowPerShare: {
+          $round: ["$avgfreeCashFlowPerShare", 4]
+        },
+        threeYRevenueGrowthPerShare: {
+          $round: [
+            "$avgthreeYRevenueGrowthPerShare",
+            4
+          ]
+        },
+        begin: 1,
+        end: 1,
+        weeklyopt: 1
+      }
+  },
+  {
     $sort:
       /**
        * Provide any number of field/order pairs.
        */
       {
+        end: -1,
+        netProfitMargin: -1,
         count: -1
       }
   }
