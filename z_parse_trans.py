@@ -19,7 +19,7 @@ def sum_trans(action, summary):
     for tran in tran_json["BrokerageTransactions"]:
         if tran["Action"] == action:
             tran_yyyymm = tran["Date"][-4:] + tran["Date"][:2]
-            tran_amt = float(tran["Amount"][1:])
+            tran_amt = float(tran["Amount"][1:].replace(',',''))
             if tran_yyyymm not in summary:
                 summary[tran_yyyymm] = tran_amt
             else:
