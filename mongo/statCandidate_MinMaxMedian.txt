@@ -1,0 +1,122 @@
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        netIncomeGrowth: {
+          $gt: 0
+        },
+        netProfitMargin: {
+          $gt: 0
+        },
+        revenueGrowth: {
+          $gt: 0
+        },
+        grossProfitGrowth: {
+          $gt: 0
+        },
+        operatingProfitMargin: {
+          $gt: 0
+        }
+      }
+  },
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: null,
+        netIncomeGrowthMin: {
+          $min: "$netIncomeGrowth"
+        },
+        netIncomeGrowthMax: {
+          $max: "$netIncomeGrowth"
+        },
+        netIncomeGrowthMean: {
+          $avg: "$netIncomeGrowth"
+        },
+        netIncomeGrowthMedian: {
+          $median: {
+            input: "$netIncomeGrowth",
+            method: "approximate"
+          }
+        },
+        netIncomeGrowthStd: {
+          $stdDevPop: "$netIncomeGrowth"
+        },
+        netProfitMarginMin: {
+          $min: "$netProfitMargin"
+        },
+        netProfitMarginMax: {
+          $max: "$netProfitMargin"
+        },
+        netProfitMarginMean: {
+          $avg: "$netProfitMargin"
+        },
+        netProfitMarginMedian: {
+          $median: {
+            input: "$netProfitMargin",
+            method: "approximate"
+          }
+        },
+        netProfitMarginStd: {
+          $stdDevPop: "$netProfitMargin"
+        },
+        revenueGrowthMin: {
+          $min: "$revenueGrowth"
+        },
+        revenueGrowthMax: {
+          $max: "$revenueGrowth"
+        },
+        revenueGrowthMean: {
+          $avg: "$revenueGrowth"
+        },
+        revenueGrowthMedian: {
+          $median: {
+            input: "$revenueGrowth",
+            method: "approximate"
+          }
+        },
+        revenueGrowthStd: {
+          $stdDevPop: "$revenueGrowth"
+        },
+        grossProfitGrowthMin: {
+          $min: "$grossProfitGrowth"
+        },
+        grossProfitGrowthMax: {
+          $max: "$grossProfitGrowth"
+        },
+        grossProfitGrowthMean: {
+          $avg: "$grossProfitGrowth"
+        },
+        grossProfitGrowthMedian: {
+          $median: {
+            input: "$grossProfitGrowth",
+            method: "approximate"
+          }
+        },
+        operatingProfitMarginMin: {
+          $min: "$operatingProfitMargin"
+        },
+        operatingProfitMarginMax: {
+          $max: "$operatingProfitMargin"
+        },
+        operatingProfitMarginMean: {
+          $avg: "$operatingProfitMargin"
+        },
+        operatingProfitMarginMedian: {
+          $median: {
+            input: "$operatingProfitMargin",
+            method: "approximate"
+          }
+        },
+        grossProfitGrowthStd: {
+          $stdDevPop: "$grossProfitGrowth"
+        }
+      }
+  }
+]
