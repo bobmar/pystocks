@@ -18,13 +18,8 @@ cash_div = "Cash Dividend"
 qual_div_reinv = "Qual Div Reinvest"
 spec_qual_div = "Special Qual Div"
 
-<<<<<<< HEAD
-action_list = [sell_call_action, cd_interest, qual_div, non_qual_div, reinv_div, qual_div_reinv, spec_non_qual_div]
-=======
-
 action_list = [sell_call_action, cd_interest, qual_div, spec_non_qual_div, non_qual_div,
                reinv_div, cash_div, qual_div_reinv, spec_qual_div]
->>>>>>> 01354b1bc98d73843c65e2a5f40aa3a6fc34a699
 
 
 def sum_trans(action, summary):
