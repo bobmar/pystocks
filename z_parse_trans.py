@@ -10,11 +10,21 @@ sell_call_action = "Sell to Open"
 cd_interest = "CD Interest"
 qual_div = "Qualified Dividend"
 qual_div_reinv = "Qual Div Reinvest"
+spec_non_qual_div = "Special Non Qual Div"
 non_qual_div = "Non-Qualified Div"
 spec_non_qual_div = "Special Non Qual Div"
 reinv_div = "Reinvest Dividend"
+cash_div = "Cash Dividend"
+qual_div_reinv = "Qual Div Reinvest"
+spec_qual_div = "Special Qual Div"
 
+<<<<<<< HEAD
 action_list = [sell_call_action, cd_interest, qual_div, non_qual_div, reinv_div, qual_div_reinv, spec_non_qual_div]
+=======
+
+action_list = [sell_call_action, cd_interest, qual_div, spec_non_qual_div, non_qual_div,
+               reinv_div, cash_div, qual_div_reinv, spec_qual_div]
+>>>>>>> 01354b1bc98d73843c65e2a5f40aa3a6fc34a699
 
 
 def sum_trans(action, summary):
@@ -30,8 +40,9 @@ def sum_trans(action, summary):
 
 
 def print_summary(summary):
-    for key in summary.keys():
-        summary_amt = round(summary[key], 2)
+    sorted_summary = dict(sorted(summary.items(), reverse=True))
+    for key in sorted_summary.keys():
+        summary_amt = round(sorted_summary[key], 2)
         print(key, summary_amt)
 
 
