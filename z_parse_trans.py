@@ -22,9 +22,9 @@ action_list = [sell_call_action, cd_interest, qual_div, spec_non_qual_div, non_q
                reinv_div, cash_div, qual_div_reinv, spec_qual_div]
 
 
-def sum_trans(action, summary):
+def sum_trans(action_cd, summary):
     for tran in tran_json["BrokerageTransactions"]:
-        if tran["Action"] == action:
+        if tran["Action"] == action_cd:
             tran_yyyymm = tran["Date"][-4:] + tran["Date"][:2]
             tran_amt = float(tran["Amount"][1:].replace(',',''))
             if tran_yyyymm not in summary:
