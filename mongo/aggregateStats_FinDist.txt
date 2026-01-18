@@ -1,0 +1,174 @@
+[
+  {
+    $group:
+      /**
+       * _id: The id of the group.
+       * fieldN: The first field name.
+       */
+      {
+        _id: null,
+        sampleSize: {
+          $sum: 1
+        },
+        netProfitMarginPctl: {
+          $percentile: {
+            input: "$netProfitMargin",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        debtEquityRatioPctl: {
+          $percentile: {
+            input: "$debtEquityRatio",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        returnOnEquityPctl: {
+          $percentile: {
+            input: "$returnOnEquity",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        returnOnAssetsPctl: {
+          $percentile: {
+            input: "$returnOnAssets",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        cashFlowToDebtRatioPctl: {
+          $percentile: {
+            input: "$cashFlowToDebtRatio",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        freeCashFlowPerSharePctl: {
+          $percentile: {
+            input: "$freeCashFlowPerShare",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        operatingCashFlowSalesRatioPctl: {
+          $percentile: {
+            input: "$operatingCashFlowSalesRatio",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        operatingProfitMarginPctl: {
+          $percentile: {
+            input: "$operatingProfitMargin",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        priceSalesRatioPctl: {
+          $percentile: {
+            input: "$priceSalesRatio",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        priceCashFlowRatioPctl: {
+          $percentile: {
+            input: "$priceCashFlowRatio",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        revenueGrowthPctl: {
+          $percentile: {
+            input: "$revenueGrowth",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        netIncomeGrowthPctl: {
+          $percentile: {
+            input: "$netIncomeGrowth",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        epsgrowthPctl: {
+          $percentile: {
+            input: "$epsgrowth",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        grossProfitGrowthPctl: {
+          $percentile: {
+            input: "$grossProfitGrowth",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        operatingIncomeGrowthPctl: {
+          $percentile: {
+            input: "$operatingIncomeGrowth",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        threeYRevenueGrowthPerSharePctl: {
+          $percentile: {
+            input: "$threeYRevenueGrowthPerShare",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        threeYOperatingCFGrowthPerSharePctl: {
+          $percentile: {
+            input:
+              "$threeYOperatingCFGrowthPerShare",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        threeYNetIncomeGrowthPerSharePctl: {
+          $percentile: {
+            input:
+              "$threeYNetIncomeGrowthPerShare",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        operatingCashFlowGrowthPctl: {
+          $percentile: {
+            input: "$operatingCashFlowGrowth",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        },
+        freeCashFlowGrowthPctl: {
+          $percentile: {
+            input: "$freeCashFlowGrowth",
+            p: [0.5, 0.75, 0.9, 0.95],
+            method: "approximate"
+          }
+        }
+      }
+  },
+  {
+    $out:
+      /**
+       * Provide the name of the output database and collection.
+       */
+      {
+        db: "stocks",
+        coll: "aggregatePercentile"
+        /*
+    timeseries: {
+    timeField: 'field',
+    bucketMaxSpanSeconds: 'number',
+    granularity: 'granularity'
+    }
+    */
+      }
+  }
+]
