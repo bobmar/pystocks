@@ -12,14 +12,13 @@ qual_div = "Qualified Dividend"
 qual_div_reinv = "Qual Div Reinvest"
 spec_non_qual_div = "Special Non Qual Div"
 non_qual_div = "Non-Qualified Div"
-spec_non_qual_div = "Special Non Qual Div"
 reinv_div = "Reinvest Dividend"
 cash_div = "Cash Dividend"
-qual_div_reinv = "Qual Div Reinvest"
 spec_qual_div = "Special Qual Div"
+spec_div = "Special Dividend"
 
 action_list = [sell_call_action, cd_interest, qual_div, spec_non_qual_div, non_qual_div,
-               reinv_div, cash_div, qual_div_reinv, spec_qual_div]
+               reinv_div, cash_div, qual_div_reinv, spec_qual_div, spec_div]
 
 
 def sum_trans(action_cd, summary):
