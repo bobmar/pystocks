@@ -1,6 +1,6 @@
 import http.client
 
-conn = http.client.HTTPConnection('192.168.50.41', 8080)
+conn = http.client.HTTPConnection('localhost', 8080)
 headers = {"Accept": "application/json"}
 conn.request('POST', '/stocks/ticker/weeklyoptions', None, headers)
 conn.set_debuglevel(4)

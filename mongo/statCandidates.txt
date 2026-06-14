@@ -14,6 +14,9 @@
         quickRatio: {
           $gt: 1.0
         },
+        $expr: {
+          $ne: ["$currentRatio", "$quickRatio"]
+        },
         epsgrowth: {
           $gt: 0
         },
@@ -45,7 +48,7 @@
           $gt: 0
         },
         avgVolume: {
-          $gt: 500000
+          $gt: 400000
         }
       }
   },
@@ -143,9 +146,21 @@
         count: {
           $gt: 1
         },
-        end: {
-          $gt: ISODate("2023-12-01")
+        $expr: {
+          $gt: [
+            "$end",
+            {
+              $dateSubtract: {
+                startDate: "$$NOW",
+                unit: "year",
+                amount: 1
+              }
+            }
+          ]
         }
+        //  end: {
+        //    $gt: ISODate('2025-12-01')
+        //  }
         //  weeklyopt: true,
       }
   },
@@ -233,6 +248,7 @@
        */
       {
         end: -1,
+        netProfitMargin: -1,
         count: -1
       }
   }
