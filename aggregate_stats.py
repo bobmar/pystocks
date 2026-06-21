@@ -16,8 +16,8 @@ stat_type = {
     "12": "PCTCHG12WK",
 }
 
-pct_increase1 = 6.3
-pct_increase2 = 31.5
+pct_increase1 = 15.3
+pct_increase2 = 60.0
 
 stat_names = ['STDDEV2WK', 'STDDEV10WK', 'UPDNVOL50', 'DYPRCV50A', 'DYPRCV10A', 'DYPRCV200A', 'ZSCORE', 'TRMOM',
               'DYPRCV20A', 'DYVOLV20A', 'DYVOLV50A', 'DYVOLV200A', 'DYPRCV10E', 'DYPRCV20E','DYPRCV50E', 'DYPRCV200E']
