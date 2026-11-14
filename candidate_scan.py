@@ -44,14 +44,6 @@ def find_fin_ratio(ticker_symbol):
         return None
 
 
-def find_fin_growth(ticker_symbol):
-    fin_growth = fr_db.find_growth(ticker_symbol)
-    if len(fin_growth) > 0:
-        return fin_growth[0]
-    else:
-        return None
-
-
 plus_minus_offset = .02
 avg_dly10_plus, avg_dly10_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs10'], plus_minus_offset)
 avg_dly20_plus, avg_dly20_minus = calc_plus_minus(avgBalLevels['avgDlyPriceVs20'], plus_minus_offset)
@@ -68,7 +60,7 @@ sdb = sd.StocksDB()
 
 ticker_idx = 0
 candidate_stats = {}
-MAX_TICKERS = 800
+MAX_TICKERS = 1100
 tickers = sdb.ticker_list(MAX_TICKERS)
 ticker_size = len(tickers)
 price_chg_stats = []

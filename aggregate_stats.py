@@ -30,7 +30,7 @@ def calc_price_date_offset(stat_period):
 
 
 def retrieve_tickers():
-    ticker_list = sdb.ticker_symbol_list(800)
+    ticker_list = sdb.ticker_symbol_list(1100)
     print('Found ', len(ticker_list), ' tickers')
     return ticker_list
 
@@ -128,12 +128,6 @@ def replace_aggregate_stats_coll(aggr_records):
 
 def calc_scan_parameters():
     result = aggr_db.calc_scan_params()
-    if len(result) > 0:
-        aggr_parm = result[0]
-        crt_date = datetime.datetime.now(datetime.UTC)
-        aggr_parm['createDate'] = crt_date
-        del aggr_parm['_id']
-        aggr_db.save_aggr_param(aggr_parm)
     return result
 
 
